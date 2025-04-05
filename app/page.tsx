@@ -6,6 +6,8 @@ import { ModelResponse } from "@/components/model/ModelResponse";
 import { AI_MODELS } from "@/config/models";
 import { useModelSettings } from "@/providers/model-settings-provider";
 import { useModelResponses } from "@/hooks/use-model-responses";
+import { Github } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const SELECTED_MODELS_KEY = "ai-selected-models";
 

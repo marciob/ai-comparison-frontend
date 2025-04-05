@@ -75,6 +75,11 @@ export function PromptInput({
     }, 0);
   };
 
+  // Count only enabled selected models
+  const enabledSelectedModels = selectedModels.filter(
+    (modelId) => models.find((m) => m.id === modelId)?.provider !== "anthropic"
+  );
+
   return (
     <div className="flex justify-center w-full">
       <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-2">
@@ -113,7 +118,9 @@ export function PromptInput({
                 type="submit"
                 size="icon"
                 disabled={
-                  !prompt.trim() || selectedModels.length === 0 || loading
+                  !prompt.trim() ||
+                  enabledSelectedModels.length === 0 ||
+                  loading
                 }
                 className="h-8 w-8"
               >
