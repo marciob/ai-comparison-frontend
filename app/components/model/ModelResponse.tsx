@@ -21,11 +21,11 @@ export function ModelResponse({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative rounded-lg border border-border p-6 bg-card min-h-[400px] flex flex-col"
+      className="relative rounded-lg border border-border p-6 bg-card min-h-[400px] flex flex-col shadow-sm dark:shadow-none transition-colors duration-200"
     >
       <div className="flex items-center gap-2 mb-4">
         <div className={`w-3 h-3 rounded-full ${color}`} />
-        <h2 className="text-lg font-semibold">{name}</h2>
+        <h2 className="text-lg font-semibold text-foreground">{name}</h2>
       </div>
 
       <div className="flex-grow overflow-y-auto">

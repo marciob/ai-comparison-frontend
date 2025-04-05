@@ -72,20 +72,20 @@ export function PromptInput({ onSubmit, isLoading }: PromptInputProps) {
               Try an example prompt
             </button>
           </div>
-          <div className="relative">
+          <div className="relative group">
             <textarea
               id="prompt"
               ref={textareaRef}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Enter your prompt here..."
-              className="w-full min-h-[128px] p-4 text-lg rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-in-out pr-14"
+              className="w-full min-h-[128px] p-4 text-lg rounded-lg border border-input bg-card text-card-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-in-out pr-14 shadow-sm dark:shadow-none"
               autoFocus
             />
             <button
               type="submit"
               disabled={!prompt.trim() || isLoading}
-              className="absolute right-3 bottom-3 p-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+              className="absolute right-3 bottom-3 p-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary transition-colors"
               aria-label="Send prompt"
             >
               <Send className="w-5 h-5" />
