@@ -1,21 +1,10 @@
 "use client";
 
 import { AIModel } from "@/config/models";
-import { Settings2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
-  DropdownMenuPortal,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { useModelSettings } from "@/providers/model-settings-provider";
 import { useEffect } from "react";
-import { ModelVersionMenu } from "./ModelVersionMenu";
-import { ModelTrigger } from "./ModelTrigger";
+import { MobileModelSelector } from "./MobileModelSelector";
+import { DesktopModelSelector } from "./DesktopModelSelector";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
@@ -23,12 +12,14 @@ interface ModelSelectorProps {
   models: AIModel[];
   selectedModels: string[];
   onToggleModel: (modelId: string) => void;
+  className?: string;
 }
 
 export function ModelSelector({
   models,
   selectedModels,
   onToggleModel,
+  className,
 }: ModelSelectorProps) {
   const { modelSettings, setModelSettings } = useModelSettings();
 
@@ -70,50 +61,21 @@ export function ModelSelector({
     (modelId) => models.find((m) => m.id === modelId)?.provider !== "anthropic"
   ).length;
 
+  const sharedProps = {
+    models,
+    selectedModels,
+    onToggleModel,
+    className,
+    modelSettings,
+    onVersionChange: handleModelVersionChange,
+    getSelectedModelName,
+    enabledModelsCount,
+  };
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 gap-1.5 text-xs text-muted-foreground"
-        >
-          <Settings2 className="h-3.5 w-3.5" />
-          <span>
-            {enabledModelsCount} model{enabledModelsCount !== 1 ? "s" : ""}
-          </span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[280px]">
-        {models.map((model) => (
-          <DropdownMenuSub key={model.id}>
-            <DropdownMenuSubTrigger
-              className={`flex items-center gap-2 cursor-pointer py-2 ${
-                model.id === "claude" ? "opacity-50" : ""
-              }`}
-              disabled={model.id === "claude"}
-            >
-              <ModelTrigger
-                model={model}
-                selectedModels={selectedModels}
-                selectedModelName={getSelectedModelName(model.id)}
-                onToggleModel={onToggleModel}
-              />
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent className="w-[200px]">
-                <ModelVersionMenu
-                  model={model}
-                  selectedModels={selectedModels}
-                  modelSettings={modelSettings}
-                  onToggleModel={onToggleModel}
-                  onVersionChange={handleModelVersionChange}
-                />
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="relative">
+      <MobileModelSelector {...sharedProps} />
+      <DesktopModelSelector {...sharedProps} />
+    </div>
   );
 }

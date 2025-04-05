@@ -68,9 +68,9 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-4 md:p-8 bg-background">
-      <div className="max-w-[1400px] mx-auto space-y-8 relative">
-        <div className="flex items-center justify-center gap-4">
+    <main className="min-h-screen p-2 sm:p-4 md:p-8 bg-background">
+      <div className="max-w-[1400px] mx-auto space-y-4 sm:space-y-8 relative">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center sm:text-left">
           <Image
             src="/aicomparison_logo.jpg"
             alt="AI Comparison Logo"
@@ -78,7 +78,9 @@ export default function Home() {
             height={40}
             className="rounded-lg"
           />
-          <h1 className="text-4xl font-bold">AI Model Comparison</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+            AI Model Comparison
+          </h1>
         </div>
 
         <PromptInput
@@ -89,7 +91,7 @@ export default function Home() {
           onToggleModel={handleToggleModel}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
           {AI_MODELS.filter(
             (model) =>
               selectedModels.includes(model.id) &&

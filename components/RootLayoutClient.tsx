@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { ModelSettingsProvider } from "@/providers/model-settings-provider";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MobileMenu } from "@/components/header/MobileMenu";
 
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
@@ -18,9 +19,10 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
     >
       <ModelSettingsProvider>
         <div className="relative">
-          <div className="absolute right-4 top-4 z-50 flex items-center gap-2">
+          {/* Desktop Header Icons */}
+          <div className="absolute right-4 top-4 z-50 hidden sm:flex items-center gap-2">
             <a
-              href="https://github.com/your-username/aicompare"
+              href="https://github.com/m/aicompare"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -35,6 +37,12 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
             <SettingsDialog />
             <ThemeToggle />
           </div>
+
+          {/* Mobile Menu */}
+          <div className="absolute right-4 top-4 z-50">
+            <MobileMenu />
+          </div>
+
           {children}
         </div>
         <Toaster richColors closeButton position="top-center" />

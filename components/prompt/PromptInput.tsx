@@ -96,7 +96,7 @@ export function PromptInput({
             </Button>
           </div>
         )}
-        <div className="relative flex items-end gap-2">
+        <div className="relative flex flex-col sm:flex-row gap-2">
           <div className="flex-1 relative">
             <Textarea
               ref={textareaRef}
@@ -104,16 +104,19 @@ export function PromptInput({
               onChange={(e) => setPrompt(e.target.value)}
               onInput={handleTextareaInput}
               placeholder="Enter your prompt here..."
-              className="resize-none min-h-[100px] max-h-[400px] pr-24 text-base"
+              className="resize-none min-h-[100px] max-h-[400px] pr-2 sm:pr-24 text-base"
               rows={1}
               autoFocus
             />
-            <div className="absolute right-2 bottom-2 flex items-center gap-2">
-              <ModelSelector
-                models={models}
-                selectedModels={selectedModels}
-                onToggleModel={onToggleModel}
-              />
+            <div className="flex items-center justify-end gap-2 mt-2 sm:mt-0 sm:absolute sm:right-2 sm:bottom-2 h-8">
+              <div className="relative">
+                <ModelSelector
+                  models={models}
+                  selectedModels={selectedModels}
+                  onToggleModel={onToggleModel}
+                  className="flex-initial"
+                />
+              </div>
               <Button
                 type="submit"
                 size="icon"
