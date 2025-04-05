@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,35 +10,43 @@ import {
 } from "./card";
 import { Button } from "./button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useApiKeys } from "@/hooks/use-api-keys";
+import { OpenAIService } from "@/lib/api/openai";
 
-interface ApiKey {
-  provider: string;
-  key: string;
-}
-
-const API_KEYS_STORAGE_KEY = "llm-api-keys";
+const API_PROVIDERS = [
+  {
+    id: "openai",
+    name: "OpenAI",
+    description: "Required for GPT-4 model",
+  },
+  {
+    id: "anthropic",
+    name: "Anthropic",
+    description: "Required for Claude model",
+  },
+  {
+    id: "google",
+    name: "Google",
+    description: "Required for Gemini model",
+  },
+] as const;
 
 export function ApiKeysManager() {
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([
-    { provider: "OpenAI", key: "" },
-    { provider: "Anthropic", key: "" },
-    { provider: "Google", key: "" },
-  ]);
-  const [showKeys, setShowKeys] = useState<{ [key: string]: boolean }>({});
+  const { apiKeys, updateApiKey } = useApiKeys();
+  const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    const savedKeys = localStorage.getItem(API_KEYS_STORAGE_KEY);
-    if (savedKeys) {
-      setApiKeys(JSON.parse(savedKeys));
+  const handleKeyChange = async (provider: string, newKey: string) => {
+    try {
+      if (provider === "openai" && newKey) {
+        // Validate OpenAI key by initializing the service
+        const service = OpenAIService.getInstance();
+        service.initialize(newKey);
+      }
+      updateApiKey(provider as keyof typeof apiKeys, newKey);
+    } catch (error) {
+      console.error(`Failed to validate ${provider} API key:`, error);
+      // You might want to show an error message to the user here
     }
-  }, []);
-
-  const handleKeyChange = (provider: string, newKey: string) => {
-    const updatedKeys = apiKeys.map((k) =>
-      k.provider === provider ? { ...k, key: newKey } : k
-    );
-    setApiKeys(updatedKeys);
-    localStorage.setItem(API_KEYS_STORAGE_KEY, JSON.stringify(updatedKeys));
   };
 
   const toggleKeyVisibility = (provider: string) => {
@@ -49,44 +57,49 @@ export function ApiKeysManager() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
+    <Card className="border-none shadow-none">
+      <CardHeader className="px-0 pt-0">
         <CardTitle className="text-xl">API Keys</CardTitle>
         <CardDescription>
-          Add your LLM provider API keys. Keys are stored securely in your
+          Add your API keys for each provider. Keys are stored securely in your
           browser.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-0">
         <div className="space-y-4">
-          {apiKeys.map((apiKey) => (
-            <div key={apiKey.provider} className="space-y-2">
-              <label
-                htmlFor={`${apiKey.provider}-key`}
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                {apiKey.provider}
-              </label>
+          {API_PROVIDERS.map((provider) => (
+            <div key={provider.id} className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor={`${provider.id}-key`}
+                  className="text-sm font-medium"
+                >
+                  {provider.name}
+                </label>
+                <span className="text-xs text-muted-foreground">
+                  {provider.description}
+                </span>
+              </div>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <input
-                    type={showKeys[apiKey.provider] ? "text" : "password"}
-                    id={`${apiKey.provider}-key`}
-                    value={apiKey.key}
+                    type={showKeys[provider.id] ? "text" : "password"}
+                    id={`${provider.id}-key`}
+                    value={apiKeys[provider.id as keyof typeof apiKeys] || ""}
                     onChange={(e) =>
-                      handleKeyChange(apiKey.provider, e.target.value)
+                      handleKeyChange(provider.id, e.target.value)
                     }
-                    placeholder={`Enter your ${apiKey.provider} API key`}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+                    placeholder={`Enter your ${provider.name} API key`}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 bg-background"
                   />
                 </div>
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => toggleKeyVisibility(apiKey.provider)}
+                  onClick={() => toggleKeyVisibility(provider.id)}
                   className="flex-shrink-0"
                 >
-                  {showKeys[apiKey.provider] ? (
+                  {showKeys[provider.id] ? (
                     <EyeOffIcon className="h-4 w-4" />
                   ) : (
                     <EyeIcon className="h-4 w-4" />

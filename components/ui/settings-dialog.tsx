@@ -12,6 +12,7 @@ import { Settings } from "lucide-react";
 import { ApiKeysManager } from "./api-keys-manager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription } from "./card";
+import { ModelSettings } from "./model-settings";
 
 export function SettingsDialog() {
   return (
@@ -35,6 +36,12 @@ export function SettingsDialog() {
                 API Keys
               </TabsTrigger>
               <TabsTrigger
+                value="models"
+                className="justify-start px-4 py-2 w-40 data-[state=active]:bg-muted"
+              >
+                Models
+              </TabsTrigger>
+              <TabsTrigger
                 value="preferences"
                 className="justify-start px-4 py-2 w-40 data-[state=active]:bg-muted"
               >
@@ -51,6 +58,9 @@ export function SettingsDialog() {
           <div className="flex-1 px-6 py-6">
             <TabsContent value="api-keys" className="mt-0 border-0">
               <ApiKeysManager />
+            </TabsContent>
+            <TabsContent value="models" className="mt-0 border-0">
+              <ModelSettings />
             </TabsContent>
             <TabsContent value="preferences" className="mt-0 border-0">
               <Card>
