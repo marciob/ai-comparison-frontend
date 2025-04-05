@@ -63,7 +63,6 @@ export function useModelResponses() {
     const enabledModels = selectedModels.filter(
       (modelId) => modelId !== "claude"
     );
-    console.log("Starting to generate responses for models:", enabledModels);
 
     // Clear previous responses and set initial loading states
     setResponses({});
@@ -72,21 +71,17 @@ export function useModelResponses() {
       return acc;
     }, {} as Record<string, boolean>);
     setLoadingModels(initialLoadingState);
-    console.log("Initial loading states:", initialLoadingState);
 
     // Function to handle response for a specific model
     const handleModelResponse = async (
       modelId: string,
       generateFn: (prompt: string) => Promise<string>
     ) => {
-      console.log(`${modelId}: Starting API call`);
       const startTime = Date.now();
       try {
         const response = await generateFn(prompt);
         const responseTime = Date.now() - startTime;
-        console.log(`${modelId}: Received response in ${responseTime}ms`);
 
-        // Update both states in a single batch
         const responseData = {
           text: response,
           responseTime,
@@ -96,20 +91,16 @@ export function useModelResponses() {
           ...prev,
           [modelId]: responseData,
         }));
-        console.log(`${modelId}: Updated response:`, responseData);
 
         setLoadingModels((prev) => ({
           ...prev,
           [modelId]: false,
         }));
-
-        console.log(`${modelId}: State updates complete`);
       } catch (error) {
         console.error(`${modelId} API error:`, error);
         const errorMessage =
           error instanceof Error ? error.message : "An unknown error occurred";
 
-        // Update both states in a single batch for error case
         const errorResponseData = {
           text: "",
           responseTime: Date.now() - startTime,
@@ -120,7 +111,6 @@ export function useModelResponses() {
           ...prev,
           [modelId]: errorResponseData,
         }));
-        console.log(`${modelId}: Updated response (error):`, errorResponseData);
 
         setLoadingModels((prev) => ({
           ...prev,
@@ -147,14 +137,12 @@ export function useModelResponses() {
       const modelFunction = getModelFunction();
       if (!modelFunction) return Promise.resolve();
 
-      // Each promise runs independently and updates state immediately when done
       return handleModelResponse(modelId, modelFunction);
     });
 
     // Run all API calls concurrently
     try {
       await Promise.all(modelPromises);
-      console.log("All API calls completed");
     } catch (error) {
       console.error("Error in API calls:", error);
     }
