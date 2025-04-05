@@ -11,7 +11,7 @@ export interface AIModel {
   name: string;
   color: string;
   description: string;
-  provider: "openai" | "anthropic" | "google";
+  provider: "openai" | "anthropic" | "google" | "deepseek";
   models: AIModelOption[];
 }
 
@@ -142,6 +142,29 @@ export const AI_MODELS: AIModel[] = [
         name: "Gemini 1.5 Pro",
         description: "Complex reasoning tasks requiring more intelligence",
         maxTokens: 8192,
+      },
+    ],
+  },
+  {
+    id: "deepseek",
+    name: "DeepSeek",
+    color: "bg-orange-500",
+    description: "DeepSeek's advanced AI models",
+    provider: "deepseek",
+    models: [
+      {
+        id: "deepseek-chat",
+        name: "DeepSeek Chat",
+        description: "DeepSeek-V3 chat model for general purpose use",
+        maxTokens: 4096,
+        defaultTemperature: 0.7,
+      },
+      {
+        id: "deepseek-reasoner",
+        name: "DeepSeek Reasoner",
+        description: "DeepSeek-R1 model optimized for reasoning tasks",
+        maxTokens: 4096,
+        defaultTemperature: 0.7,
       },
     ],
   },

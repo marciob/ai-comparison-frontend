@@ -5,6 +5,7 @@ import { PromptInput } from "@/components/prompt/PromptInput";
 import { ModelResponse } from "@/components/model/ModelResponse";
 import { AI_MODELS } from "@/config/models";
 import { useOpenAI, useAnthropic, useGemini } from "@/hooks/llm";
+import { useDeepseek } from "@/hooks/llm/use-deepseek";
 import { toast } from "sonner";
 import { SettingsDialog } from "@/components/ui/settings-dialog";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -39,6 +40,15 @@ export default function Home() {
     generateCompletion: generateGeminiCompletion,
     isLoading: isGeminiLoading,
   } = useGemini({
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const {
+    generateCompletion: generateDeepseekCompletion,
+    isLoading: isDeepseekLoading,
+  } = useDeepseek({
     onError: (error) => {
       toast.error(error.message);
     },
@@ -111,6 +121,19 @@ export default function Home() {
         );
       }
 
+      if (selectedModels.includes("deepseek")) {
+        apiCalls.push(
+          generateDeepseekCompletion(prompt)
+            .then((response) => {
+              setResponses((prev) => ({
+                ...prev,
+                deepseek: response,
+              }));
+            })
+            .catch((error) => console.error("Deepseek API error:", error))
+        );
+      }
+
       // Wait for all API calls to complete
       await Promise.all(apiCalls);
     } catch (error) {
@@ -125,7 +148,12 @@ export default function Home() {
 
         <PromptInput
           onSubmit={handleSubmit}
-          loading={isOpenAILoading || isClaudeLoading || isGeminiLoading}
+          loading={
+            isOpenAILoading ||
+            isClaudeLoading ||
+            isGeminiLoading ||
+            isDeepseekLoading
+          }
           models={AI_MODELS}
           selectedModels={selectedModels}
           onToggleModel={handleToggleModel}
@@ -147,6 +175,8 @@ export default function Home() {
                     ? isClaudeLoading
                     : model.id === "gemini"
                     ? isGeminiLoading
+                    : model.id === "deepseek"
+                    ? isDeepseekLoading
                     : false
                 }
                 modelSettings={modelSettings}

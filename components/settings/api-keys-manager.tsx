@@ -7,8 +7,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./card";
-import { Button } from "./button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useApiKeys } from "@/hooks/use-api-keys";
 import { OpenAIService } from "@/lib/api/openai";
@@ -28,6 +28,11 @@ const API_PROVIDERS = [
     id: "google",
     name: "Google",
     description: "Required for Gemini model",
+  },
+  {
+    id: "deepseek",
+    name: "DeepSeek",
+    description: "Required for DeepSeek models",
   },
 ] as const;
 

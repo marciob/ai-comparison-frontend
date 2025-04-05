@@ -6,6 +6,7 @@ interface ApiKeys {
   openai?: string;
   anthropic?: string;
   google?: string;
+  deepseek?: string;
 }
 
 export function useApiKeys() {

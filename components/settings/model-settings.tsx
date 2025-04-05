@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardDescription } from "./card";
+import { Card, CardContent, CardDescription } from "@/components/ui/card";
 import { AI_MODELS, type AIModel, type AIModelOption } from "@/config/models";
 import {
   Select,
@@ -31,9 +31,34 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        setSelectedModels(parsed);
+        // Ensure all providers have a selected model by applying defaults where needed
+        const withDefaults = AI_MODELS.reduce(
+          (acc, provider) => ({
+            ...acc,
+            [provider.id]: parsed[provider.id] || provider.models[0].id,
+          }),
+          {}
+        );
+        setSelectedModels(withDefaults);
+        // Save the settings with defaults if they were missing
+        if (JSON.stringify(withDefaults) !== savedSettings) {
+          localStorage.setItem(
+            MODEL_SETTINGS_KEY,
+            JSON.stringify(withDefaults)
+          );
+        }
       } catch (error) {
         console.error("Failed to parse saved model settings:", error);
+        // On error, fall back to defaults
+        const defaults = AI_MODELS.reduce(
+          (acc, provider) => ({
+            ...acc,
+            [provider.id]: provider.models[0].id,
+          }),
+          {}
+        );
+        setSelectedModels(defaults);
+        localStorage.setItem(MODEL_SETTINGS_KEY, JSON.stringify(defaults));
       }
     } else {
       // Set defaults if no saved settings
