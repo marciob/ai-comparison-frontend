@@ -54,50 +54,6 @@ export const AI_MODELS: AIModel[] = [
     ],
   },
   {
-    id: "claude",
-    name: "Anthropic",
-    color: "bg-purple-500",
-    description: "Anthropic's AI models",
-    provider: "anthropic",
-    models: [
-      {
-        id: "claude-3-7-sonnet-20250219",
-        name: "Claude 3.7 Sonnet",
-        description: "Most advanced Claude model",
-      },
-      {
-        id: "claude-3-5-haiku-20241022",
-        name: "Claude 3.5 Haiku",
-        description: "Fast and efficient model",
-      },
-      {
-        id: "claude-3-5-sonnet-20241022",
-        name: "Claude 3.5 Sonnet v2",
-        description: "Balanced performance and capabilities",
-      },
-      {
-        id: "claude-3-5-sonnet-20240620",
-        name: "Claude 3.5 Sonnet",
-        description: "Original Claude 3.5 Sonnet model",
-      },
-      {
-        id: "claude-3-opus-20240229",
-        name: "Claude 3 Opus",
-        description: "Most powerful Claude model",
-      },
-      {
-        id: "claude-3-sonnet-20240229",
-        name: "Claude 3 Sonnet",
-        description: "Balanced performance and speed",
-      },
-      {
-        id: "claude-3-haiku-20240307",
-        name: "Claude 3 Haiku",
-        description: "Fast and efficient model",
-      },
-    ],
-  },
-  {
     id: "gemini",
     name: "Google",
     color: "bg-blue-500",
@@ -165,6 +121,50 @@ export const AI_MODELS: AIModel[] = [
         description: "DeepSeek-R1 model optimized for reasoning tasks",
         maxTokens: 4096,
         defaultTemperature: 0.7,
+      },
+    ],
+  },
+  {
+    id: "claude",
+    name: "Anthropic",
+    color: "bg-purple-500",
+    description: "Anthropic's AI models",
+    provider: "anthropic",
+    models: [
+      {
+        id: "claude-3-7-sonnet-20250219",
+        name: "Claude 3.7 Sonnet",
+        description: "Most advanced Claude model",
+      },
+      {
+        id: "claude-3-5-haiku-20241022",
+        name: "Claude 3.5 Haiku",
+        description: "Fast and efficient model",
+      },
+      {
+        id: "claude-3-5-sonnet-20241022",
+        name: "Claude 3.5 Sonnet v2",
+        description: "Balanced performance and capabilities",
+      },
+      {
+        id: "claude-3-5-sonnet-20240620",
+        name: "Claude 3.5 Sonnet",
+        description: "Original Claude 3.5 Sonnet model",
+      },
+      {
+        id: "claude-3-opus-20240229",
+        name: "Claude 3 Opus",
+        description: "Most powerful Claude model",
+      },
+      {
+        id: "claude-3-sonnet-20240229",
+        name: "Claude 3 Sonnet",
+        description: "Balanced performance and speed",
+      },
+      {
+        id: "claude-3-haiku-20240307",
+        name: "Claude 3 Haiku",
+        description: "Fast and efficient model",
       },
     ],
   },

@@ -83,84 +83,111 @@ export function ModelSelector({
       <DropdownMenuContent align="end" className="w-[280px]">
         {models.map((model) => (
           <DropdownMenuSub key={model.id}>
-            <DropdownMenuSubTrigger className="flex items-center gap-2 cursor-pointer py-2">
+            <DropdownMenuSubTrigger
+              className={`flex items-center gap-2 cursor-pointer py-2 ${
+                model.id === "claude" ? "opacity-50" : ""
+              }`}
+              disabled={model.id === "claude"}
+            >
               <div
                 className={`w-2 h-2 rounded-full ${model.color} flex-shrink-0`}
               />
               <span className="flex-1 truncate font-medium">{model.name}</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground whitespace-nowrap">
-                  {getSelectedModelName(model.id)}
-                </span>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onToggleModel(model.id);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      onToggleModel(model.id);
-                    }
-                  }}
-                  className={`w-3.5 h-3.5 rounded border flex-shrink-0 cursor-pointer flex items-center justify-center ${
-                    selectedModels.includes(model.id)
-                      ? "bg-primary border-primary"
-                      : "border-muted-foreground"
-                  }`}
-                >
-                  {selectedModels.includes(model.id) && (
-                    <Check className="h-2.5 w-2.5 text-primary-foreground" />
-                  )}
-                </div>
+                {model.id === "claude" ? (
+                  <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded whitespace-nowrap">
+                    Coming soon
+                  </span>
+                ) : (
+                  <>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {getSelectedModelName(model.id)}
+                    </span>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (model.id !== "claude") {
+                          onToggleModel(model.id);
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (model.id !== "claude") {
+                            onToggleModel(model.id);
+                          }
+                        }
+                      }}
+                      className={`w-3.5 h-3.5 rounded border flex-shrink-0 cursor-pointer flex items-center justify-center ${
+                        selectedModels.includes(model.id)
+                          ? "bg-primary border-primary"
+                          : "border-muted-foreground"
+                      }`}
+                    >
+                      {selectedModels.includes(model.id) && (
+                        <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent className="w-[200px]">
-                <div className="p-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Select Version</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 px-2"
-                      onClick={() => onToggleModel(model.id)}
-                    >
-                      {selectedModels.includes(model.id) ? "Disable" : "Enable"}
-                    </Button>
+                {model.id === "claude" ? (
+                  <div className="p-3 text-sm text-muted-foreground">
+                    Claude integration is coming soon. Stay tuned!
                   </div>
-                  <div className="space-y-1">
-                    {model.models.map((version) => (
-                      <DropdownMenuItem
-                        key={version.id}
-                        className="flex flex-col items-start gap-1 cursor-pointer"
-                        onClick={() =>
-                          handleModelVersionChange(model.id, version.id)
-                        }
+                ) : (
+                  <div className="p-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">
+                        Select Version
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2"
+                        onClick={() => onToggleModel(model.id)}
                       >
-                        <div className="flex items-center gap-2 w-full">
-                          <div className="font-medium text-sm">
-                            {version.name}
+                        {selectedModels.includes(model.id)
+                          ? "Disable"
+                          : "Enable"}
+                      </Button>
+                    </div>
+                    <div className="space-y-1">
+                      {model.models.map((version) => (
+                        <DropdownMenuItem
+                          key={version.id}
+                          className="flex flex-col items-start gap-1 cursor-pointer"
+                          onClick={() =>
+                            handleModelVersionChange(model.id, version.id)
+                          }
+                        >
+                          <div className="flex items-center gap-2 w-full">
+                            <div className="font-medium text-sm">
+                              {version.name}
+                            </div>
+                            {modelSettings[model.id] === version.id && (
+                              <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
+                                Selected
+                              </span>
+                            )}
                           </div>
-                          {modelSettings[model.id] === version.id && (
-                            <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
-                              Selected
-                            </span>
+                          {version.description && (
+                            <div className="text-xs text-muted-foreground">
+                              {version.description}
+                            </div>
                           )}
-                        </div>
-                        {version.description && (
-                          <div className="text-xs text-muted-foreground">
-                            {version.description}
-                          </div>
-                        )}
-                      </DropdownMenuItem>
-                    ))}
+                        </DropdownMenuItem>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>

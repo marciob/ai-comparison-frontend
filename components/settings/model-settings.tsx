@@ -103,7 +103,9 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
             return (
               <div
                 key={provider.id}
-                className="flex items-start space-x-4 p-3 rounded-lg border bg-card"
+                className={`flex items-start space-x-4 p-3 rounded-lg border bg-card ${
+                  provider.id === "claude" ? "opacity-50" : ""
+                }`}
               >
                 <div
                   className={`w-1 self-stretch rounded-full ${provider.color}`}
@@ -119,32 +121,40 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <Select
-                    value={selectedModels[provider.id] || provider.models[0].id}
-                    onValueChange={(value) =>
-                      handleModelChange(provider.id, value)
-                    }
-                  >
-                    <SelectTrigger className="w-[180px] h-8">
-                      <SelectValue>
-                        {selectedModel?.name || provider.models[0].name}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {provider.models.map((model) => (
-                        <SelectItem key={model.id} value={model.id}>
-                          <div className="space-y-1">
-                            <div className="font-medium">{model.name}</div>
-                            {model.description && (
-                              <div className="text-xs text-muted-foreground">
-                                {model.description}
-                              </div>
-                            )}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {provider.id === "claude" ? (
+                    <div className="px-2 py-1 rounded-md bg-muted/50 text-xs text-muted-foreground">
+                      Coming soon
+                    </div>
+                  ) : (
+                    <Select
+                      value={
+                        selectedModels[provider.id] || provider.models[0].id
+                      }
+                      onValueChange={(value) =>
+                        handleModelChange(provider.id, value)
+                      }
+                    >
+                      <SelectTrigger className="w-[180px] h-8">
+                        <SelectValue>
+                          {selectedModel?.name || provider.models[0].name}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {provider.models.map((model) => (
+                          <SelectItem key={model.id} value={model.id}>
+                            <div className="space-y-1">
+                              <div className="font-medium">{model.name}</div>
+                              {model.description && (
+                                <div className="text-xs text-muted-foreground">
+                                  {model.description}
+                                </div>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               </div>
             );

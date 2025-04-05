@@ -8,6 +8,7 @@ import { toast } from "sonner";
 interface ResponseData {
   text: string;
   responseTime: number;
+  error?: string;
 }
 
 export function useModelResponses() {
@@ -106,7 +107,19 @@ export function useModelResponses() {
         console.log(`${modelId}: State updates complete`);
       } catch (error) {
         console.error(`${modelId} API error:`, error);
-        toast.error(`${modelId} failed to respond`);
+        const errorMessage =
+          error instanceof Error ? error.message : "An unknown error occurred";
+
+        // Update responses with error state instead of showing toast
+        setResponses((prev) => ({
+          ...prev,
+          [modelId]: {
+            text: "",
+            responseTime: Date.now() - startTime,
+            error: errorMessage,
+          },
+        }));
+
         setLoadingModels((prev) => ({
           ...prev,
           [modelId]: false,

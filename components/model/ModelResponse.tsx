@@ -3,13 +3,14 @@
 import { motion } from "framer-motion";
 import { AI_MODELS } from "@/config/models";
 import { useEffect, useState, memo } from "react";
-import { Clock } from "lucide-react";
+import { Clock, AlertCircle } from "lucide-react";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
 interface ResponseData {
   text: string;
   responseTime: number;
+  error?: string;
 }
 
 interface ModelResponseProps {
@@ -98,7 +99,15 @@ export const ModelResponse = memo(function ModelResponse({
             <div className="h-5 bg-muted rounded w-5/6" />
             <div className="h-5 bg-muted rounded w-3/6" />
           </div>
-        ) : response ? (
+        ) : response?.error ? (
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+            <AlertCircle className="w-12 h-12 text-destructive/70" />
+            <div className="max-w-[240px] space-y-2">
+              <p className="text-sm font-medium text-destructive">Error</p>
+              <p className="text-sm text-muted-foreground">{response.error}</p>
+            </div>
+          </div>
+        ) : response?.text ? (
           <p className="text-base text-card-foreground whitespace-pre-wrap leading-relaxed">
             {response.text}
           </p>
