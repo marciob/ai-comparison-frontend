@@ -2,10 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
+import { ModelSelector } from "@/app/components/model/ModelSelector";
+import { AIModel } from "@/app/config/models";
 
 interface PromptInputProps {
   onSubmit: (prompt: string) => Promise<void>;
   isLoading: boolean;
+  models: AIModel[];
+  selectedModels: string[];
+  onToggleModel: (modelId: string) => void;
 }
 
 const EXAMPLE_PROMPTS = [
@@ -15,7 +20,13 @@ const EXAMPLE_PROMPTS = [
   "Design a sustainable city of the future and describe its key features.",
 ];
 
-export function PromptInput({ onSubmit, isLoading }: PromptInputProps) {
+export function PromptInput({
+  onSubmit,
+  isLoading,
+  models,
+  selectedModels,
+  onToggleModel,
+}: PromptInputProps) {
   const [prompt, setPrompt] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -58,28 +69,35 @@ export function PromptInput({ onSubmit, isLoading }: PromptInputProps) {
 
   return (
     <div className="flex justify-center w-full">
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-4">
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-2">
-            <label htmlFor="prompt" className="text-sm text-muted-foreground">
-              Your prompt
-            </label>
-            <button
-              type="button"
-              onClick={handleExamplePrompt}
-              className="text-sm text-primary hover:text-primary/80 transition-colors"
-            >
-              Try an example prompt
-            </button>
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl">
+        <div className="relative space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <label htmlFor="prompt" className="text-sm text-muted-foreground">
+                Your prompt
+              </label>
+              <button
+                type="button"
+                onClick={handleExamplePrompt}
+                className="text-xs text-primary hover:text-primary/80 transition-colors"
+              >
+                Try an example
+              </button>
+            </div>
+            <ModelSelector
+              models={models}
+              selectedModels={selectedModels}
+              onToggleModel={onToggleModel}
+            />
           </div>
-          <div className="relative group">
+          <div className="relative">
             <textarea
               id="prompt"
               ref={textareaRef}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Enter your prompt here..."
-              className="w-full min-h-[128px] p-4 text-lg rounded-lg border border-input bg-card text-card-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-in-out pr-14 shadow-sm dark:shadow-none"
+              className="w-full min-h-[128px] p-4 text-lg rounded-lg border border-input bg-card text-card-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-in-out pr-14"
               autoFocus
             />
             <button
