@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, ExternalLink } from "lucide-react";
 import { useApiKeys } from "@/hooks/use-api-keys";
 import { OpenAIService } from "@/lib/api/openai";
 
@@ -18,21 +18,25 @@ const API_PROVIDERS = [
     id: "openai",
     name: "OpenAI",
     description: "Required for Openai models",
+    getKeyUrl: "https://platform.openai.com/api-keys",
   },
   {
     id: "anthropic",
     name: "Anthropic",
     description: "Required for Claude models",
+    getKeyUrl: "https://console.anthropic.com/settings/keys",
   },
   {
     id: "google",
     name: "Google",
     description: "Required for Gemini models",
+    getKeyUrl: "https://makersuite.google.com/app/apikey",
   },
   {
     id: "deepseek",
     name: "DeepSeek",
     description: "Required for DeepSeek models",
+    getKeyUrl: "https://platform.deepseek.com/api_keys",
   },
 ] as const;
 
@@ -75,12 +79,23 @@ export function ApiKeysManager() {
           {API_PROVIDERS.map((provider) => (
             <div key={provider.id} className="space-y-2">
               <div className="flex justify-between items-center">
-                <label
-                  htmlFor={`${provider.id}-key`}
-                  className="text-sm font-medium"
-                >
-                  {provider.name}
-                </label>
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor={`${provider.id}-key`}
+                    className="text-sm font-medium"
+                  >
+                    {provider.name}
+                  </label>
+                  <a
+                    href={provider.getKeyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                  >
+                    Get API key
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
                 <span className="text-xs text-muted-foreground">
                   {provider.description}
                 </span>
