@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon, ExternalLink } from "lucide-react";
+import { EyeIcon, EyeOffIcon, ExternalLink, AlertTriangle } from "lucide-react";
 import { useApiKeys } from "@/hooks/use-api-keys";
 import { OpenAIService } from "@/lib/api/openai";
 
@@ -17,7 +17,7 @@ const API_PROVIDERS = [
   {
     id: "openai",
     name: "OpenAI",
-    description: "Required for Openai models",
+    description: "Required for GPT-4 and other OpenAI models",
     getKeyUrl: "https://platform.openai.com/api-keys",
   },
   {
@@ -36,7 +36,7 @@ const API_PROVIDERS = [
     id: "deepseek",
     name: "DeepSeek",
     description: "Required for DeepSeek models",
-    getKeyUrl: "https://platform.deepseek.com/api_keys",
+    getKeyUrl: "https://platform.deepseek.com/",
   },
 ] as const;
 
@@ -69,13 +69,25 @@ export function ApiKeysManager() {
     <Card className="border-none shadow-none">
       <CardHeader className="px-6 pt-6">
         <CardTitle className="text-xl">API Keys</CardTitle>
-        <CardDescription>
-          Add your API keys for each provider. Keys are stored securely in your
-          browser.
+        <CardDescription className="space-y-2">
+          <p>
+            Add your API keys for each provider to enable their models. Keys are
+            stored in your browser's local storage.
+          </p>
+          <div className="flex items-start gap-2 p-3 rounded-md bg-destructive/20 dark:bg-destructive/30 text-destructive dark:text-destructive-foreground text-sm border border-destructive/20">
+            <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+            <p>
+              <span className="font-medium">Security Warning:</span> API keys
+              are stored only in your browser's local storage. Do not use this
+              application on public or shared devices. API keys provide access
+              to your accounts and will incur charges. Keep your keys secure and
+              never share them.
+            </p>
+          </div>
         </CardDescription>
       </CardHeader>
       <CardContent className="px-6">
-        <div className="space-y-4">
+        <div className="space-y-6">
           {API_PROVIDERS.map((provider) => (
             <div key={provider.id} className="space-y-2">
               <div className="flex justify-between items-center">

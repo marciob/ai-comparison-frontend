@@ -21,7 +21,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
           {/* Desktop Header Icons */}
           <div className="fixed right-4 top-4 z-50 hidden sm:flex items-center gap-2">
             <a
-              href="https://github.com/m/aicompare"
+              href="https://github.com/marciob/ai-comparison-frontend"
               target="_blank"
               rel="noopener noreferrer"
             >
