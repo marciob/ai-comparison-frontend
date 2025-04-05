@@ -63,14 +63,14 @@ export function ApiKeysManager() {
 
   return (
     <Card className="border-none shadow-none">
-      <CardHeader className="px-0 pt-0">
+      <CardHeader className="px-6 pt-6">
         <CardTitle className="text-xl">API Keys</CardTitle>
         <CardDescription>
           Add your API keys for each provider. Keys are stored securely in your
           browser.
         </CardDescription>
       </CardHeader>
-      <CardContent className="px-0">
+      <CardContent className="px-6">
         <div className="space-y-4">
           {API_PROVIDERS.map((provider) => (
             <div key={provider.id} className="space-y-2">

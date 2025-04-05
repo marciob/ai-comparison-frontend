@@ -95,7 +95,7 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
 
   return (
     <Card className="border-none shadow-none">
-      <CardContent className="space-y-6 px-0 pt-0">
+      <CardContent className="space-y-6 px-6 pt-6">
         <CardDescription>
           Configure which model version to use for each AI provider
         </CardDescription>
