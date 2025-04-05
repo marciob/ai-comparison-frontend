@@ -68,9 +68,6 @@ export function SettingsDialog() {
                     <p>
                       A tool for comparing responses from different AI models.
                     </p>
-                    <p className="text-muted-foreground">
-                      Built with Next.js, Tailwind CSS, and shadcn/ui.
-                    </p>
                   </div>
                 </CardContent>
               </Card>
