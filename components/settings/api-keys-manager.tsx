@@ -17,17 +17,17 @@ const API_PROVIDERS = [
   {
     id: "openai",
     name: "OpenAI",
-    description: "Required for GPT-4 model",
+    description: "Required for Openai models",
   },
   {
     id: "anthropic",
     name: "Anthropic",
-    description: "Required for Claude model",
+    description: "Required for Claude models",
   },
   {
     id: "google",
     name: "Google",
-    description: "Required for Gemini model",
+    description: "Required for Gemini models",
   },
   {
     id: "deepseek",

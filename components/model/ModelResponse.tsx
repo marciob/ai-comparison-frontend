@@ -26,29 +26,34 @@ export function ModelResponse({
   const [selectedModelName, setSelectedModelName] = useState<string>("");
 
   useEffect(() => {
+    const provider = AI_MODELS.find((p) => p.id === id);
+    if (!provider) return;
+
+    // Try to get model ID from props or localStorage
+    let modelId: string | undefined;
     if (modelSettings) {
-      const provider = AI_MODELS.find((p) => p.id === id);
-      const modelId = modelSettings[id];
-      const model = provider?.models.find((m) => m.id === modelId);
-      if (model) {
-        setSelectedModelName(model.name);
-      }
+      modelId = modelSettings[id];
     } else {
-      // Load from localStorage as fallback
       const savedSettings = localStorage.getItem(MODEL_SETTINGS_KEY);
       if (savedSettings) {
         try {
           const settings = JSON.parse(savedSettings);
-          const provider = AI_MODELS.find((p) => p.id === id);
-          const modelId = settings[id];
-          const model = provider?.models.find((m) => m.id === modelId);
-          if (model) {
-            setSelectedModelName(model.name);
-          }
+          modelId = settings[id];
         } catch (error) {
           console.error("Failed to load model settings:", error);
         }
       }
+    }
+
+    // If no model ID is found, use the first model as default
+    if (!modelId) {
+      modelId = provider.models[0].id;
+    }
+
+    // Find and set the model name
+    const model = provider.models.find((m) => m.id === modelId);
+    if (model) {
+      setSelectedModelName(model.name);
     }
   }, [id, modelSettings]);
 
@@ -56,20 +61,20 @@ export function ModelResponse({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative rounded-lg border border-border p-6 bg-card min-h-[400px] flex flex-col shadow-sm dark:shadow-none transition-colors duration-200"
+      className="relative rounded-lg border border-border p-8 bg-card min-h-[600px] flex flex-col shadow-sm dark:shadow-none transition-colors duration-200"
     >
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-foreground">{name}</h2>
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-xl font-semibold text-foreground">{name}</h2>
         {selectedModelName && (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {selectedModelName}
           </span>
         )}
       </div>
 
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto pr-4">
         {isLoading ? (
-          <div className="animate-pulse space-y-3">
+          <div className="animate-pulse space-y-4">
             <div className="h-5 bg-muted rounded" />
             <div className="h-5 bg-muted rounded w-5/6" />
             <div className="h-5 bg-muted rounded w-4/6" />
@@ -77,7 +82,7 @@ export function ModelResponse({
             <div className="h-5 bg-muted rounded w-3/6" />
           </div>
         ) : response ? (
-          <p className="text-base text-card-foreground whitespace-pre-wrap">
+          <p className="text-base text-card-foreground whitespace-pre-wrap leading-relaxed">
             {response}
           </p>
         ) : (

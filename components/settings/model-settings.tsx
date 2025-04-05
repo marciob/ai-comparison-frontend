@@ -120,14 +120,14 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
                 </div>
                 <div className="flex-shrink-0">
                   <Select
-                    value={selectedModels[provider.id]}
+                    value={selectedModels[provider.id] || provider.models[0].id}
                     onValueChange={(value) =>
                       handleModelChange(provider.id, value)
                     }
                   >
                     <SelectTrigger className="w-[180px] h-8">
                       <SelectValue>
-                        {selectedModel?.name || "Select a model"}
+                        {selectedModel?.name || provider.models[0].name}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
