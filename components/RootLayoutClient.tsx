@@ -2,7 +2,7 @@
 
 import { ThemeProvider } from "@/providers/theme-provider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { SettingsDialog } from "@/components/ui/settings-dialog";
+import { SettingsDialog } from "@/components/settings/settings-dialog";
 import { Toaster } from "sonner";
 import { ModelSettingsProvider } from "@/providers/model-settings-provider";
 

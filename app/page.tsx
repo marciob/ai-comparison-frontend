@@ -7,7 +7,7 @@ import { AI_MODELS } from "@/config/models";
 import { useOpenAI, useAnthropic, useGemini } from "@/hooks/llm";
 import { useDeepseek } from "@/hooks/llm/use-deepseek";
 import { toast } from "sonner";
-import { SettingsDialog } from "@/components/ui/settings-dialog";
+import { SettingsDialog } from "@/components/settings/settings-dialog";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useModelSettings } from "@/providers/model-settings-provider";
 

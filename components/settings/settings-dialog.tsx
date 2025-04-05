@@ -7,12 +7,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "./button";
+import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
-import { ApiKeysManager } from "@/components/settings/api-keys-manager";
+import { ApiKeysManager } from "./api-keys-manager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription } from "./card";
-import { ModelSettings } from "@/components/settings/model-settings";
+import { Card, CardContent, CardDescription } from "@/components/ui/card";
+import { ModelSettings } from "./model-settings";
 import { useModelSettings } from "@/providers/model-settings-provider";
 
 export function SettingsDialog() {
