@@ -8,6 +8,7 @@ import { useModelSettings } from "@/providers/model-settings-provider";
 import { useModelResponses } from "@/hooks/use-model-responses";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const SELECTED_MODELS_KEY = "ai-selected-models";
 
@@ -61,7 +62,16 @@ export default function Home() {
   return (
     <main className="min-h-screen p-4 md:p-8 bg-background">
       <div className="max-w-[1400px] mx-auto space-y-8 relative">
-        <h1 className="text-4xl font-bold text-center">AI Model Comparison</h1>
+        <div className="flex items-center justify-center gap-4">
+          <Image
+            src="/aicomparison_logo.jpg"
+            alt="AI Comparison Logo"
+            width={40}
+            height={40}
+            className="rounded-lg"
+          />
+          <h1 className="text-4xl font-bold">AI Model Comparison</h1>
+        </div>
 
         <PromptInput
           onSubmit={(prompt) => generateResponses(prompt, selectedModels)}

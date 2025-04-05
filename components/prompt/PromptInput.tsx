@@ -92,7 +92,7 @@ export function PromptInput({
               onClick={tryExamplePrompt}
               className="text-xs text-muted-foreground hover:text-foreground"
             >
-              Try an example
+              Try a prompt example
             </Button>
           </div>
         )}
