@@ -57,40 +57,42 @@ export function PromptInput({ onSubmit, isLoading }: PromptInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="relative">
-        <div className="flex items-center gap-2 mb-2">
-          <label htmlFor="prompt" className="text-sm text-muted-foreground">
-            Your prompt
-          </label>
-          <button
-            type="button"
-            onClick={handleExamplePrompt}
-            className="text-sm text-primary hover:text-primary/80 transition-colors"
-          >
-            Try an example prompt
-          </button>
-        </div>
+    <div className="flex justify-center w-full">
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-4">
         <div className="relative">
-          <textarea
-            id="prompt"
-            ref={textareaRef}
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter your prompt here..."
-            className="w-full min-h-[128px] p-4 text-lg rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-in-out pr-14"
-            autoFocus
-          />
-          <button
-            type="submit"
-            disabled={!prompt.trim() || isLoading}
-            className="absolute right-3 bottom-3 p-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
-            aria-label="Send prompt"
-          >
-            <Send className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2 mb-2">
+            <label htmlFor="prompt" className="text-sm text-muted-foreground">
+              Your prompt
+            </label>
+            <button
+              type="button"
+              onClick={handleExamplePrompt}
+              className="text-sm text-primary hover:text-primary/80 transition-colors"
+            >
+              Try an example prompt
+            </button>
+          </div>
+          <div className="relative">
+            <textarea
+              id="prompt"
+              ref={textareaRef}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Enter your prompt here..."
+              className="w-full min-h-[128px] p-4 text-lg rounded-lg border border-input bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-in-out pr-14"
+              autoFocus
+            />
+            <button
+              type="submit"
+              disabled={!prompt.trim() || isLoading}
+              className="absolute right-3 bottom-3 p-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+              aria-label="Send prompt"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
