@@ -6,9 +6,7 @@ import { ModelResponse } from "@/components/model/ModelResponse";
 import { AI_MODELS } from "@/config/models";
 import { useModelSettings } from "@/providers/model-settings-provider";
 import { useModelResponses } from "@/hooks/use-model-responses";
-import { Github } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { Header } from "@/components/header/Header";
 
 const SELECTED_MODELS_KEY = "ai-selected-models";
 
@@ -68,21 +66,9 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-2 sm:p-4 md:p-8 bg-background">
-      <div className="max-w-[1400px] mx-auto space-y-4 sm:space-y-8 relative">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center sm:text-left">
-          <Image
-            src="/aicomparison_logo.jpg"
-            alt="AI Comparison Logo"
-            width={40}
-            height={40}
-            className="rounded-lg"
-          />
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-            AI Model Comparison
-          </h1>
-        </div>
-
+    <main className="min-h-screen bg-background">
+      <Header />
+      <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
         <PromptInput
           onSubmit={(prompt) => generateResponses(prompt, selectedModels)}
           loading={isLoading}

@@ -45,12 +45,6 @@ export function SettingsDialog() {
                 Models
               </TabsTrigger>
               <TabsTrigger
-                value="preferences"
-                className="justify-start px-4 py-2 w-40 data-[state=active]:bg-muted"
-              >
-                Preferences
-              </TabsTrigger>
-              <TabsTrigger
                 value="about"
                 className="justify-start px-4 py-2 w-40 data-[state=active]:bg-muted"
               >
@@ -64,19 +58,6 @@ export function SettingsDialog() {
             </TabsContent>
             <TabsContent value="models" className="mt-0 border-0">
               <ModelSettings onModelChange={setModelSettings} />
-            </TabsContent>
-            <TabsContent value="preferences" className="mt-0 border-0">
-              <Card>
-                <CardContent className="space-y-4 pt-6">
-                  <CardDescription>
-                    Customize your experience with these preferences.
-                  </CardDescription>
-                  {/* Add preference settings here */}
-                  <div className="text-sm text-muted-foreground">
-                    More preferences coming soon...
-                  </div>
-                </CardContent>
-              </Card>
             </TabsContent>
             <TabsContent value="about" className="mt-0 border-0">
               <Card>

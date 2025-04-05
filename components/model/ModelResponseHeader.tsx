@@ -24,9 +24,16 @@ export const ModelResponseHeader = ({
   maxTokens,
 }: ModelResponseHeaderProps) => {
   return (
-    <div className="flex items-center justify-between mb-8">
-      <h2 className="text-xl font-semibold text-foreground">{name}</h2>
-      <div className="flex items-center gap-4">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-8">
+      <div className="flex items-center gap-2">
+        <h2 className="text-2xl sm:text-xl font-semibold text-foreground">
+          {name}
+        </h2>
+        <span className="text-sm text-muted-foreground hidden sm:inline">
+          {selectedModelName}
+        </span>
+      </div>
+      <div className="flex items-center gap-2 sm:gap-4 justify-between sm:justify-start">
         {response?.responseTime && (
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/50">
             <Clock className="w-3 h-3 text-muted-foreground" />
@@ -39,11 +46,9 @@ export const ModelResponseHeader = ({
           tokenUsage={response?.tokenUsage}
           maxTokens={maxTokens}
         />
-        {selectedModelName && (
-          <span className="text-sm text-muted-foreground">
-            {selectedModelName}
-          </span>
-        )}
+        <span className="text-sm text-muted-foreground sm:hidden">
+          {selectedModelName}
+        </span>
       </div>
     </div>
   );

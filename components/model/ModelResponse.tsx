@@ -39,7 +39,7 @@ export const ModelResponse = memo(function ModelResponse({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative rounded-lg border border-border p-4 sm:p-6 md:p-8 bg-card min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex flex-col shadow-sm dark:shadow-none transition-colors duration-200"
+      className="relative rounded-lg border border-border p-3 sm:p-6 md:p-8 bg-card min-h-[300px] sm:min-h-[500px] md:min-h-[600px] flex flex-col shadow-sm dark:shadow-none transition-colors duration-200"
     >
       <ModelResponseHeader
         name={name}
