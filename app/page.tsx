@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen p-4 md:p-8 bg-background">
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-8 relative">
         <h1 className="text-4xl font-bold text-center">AI Model Comparison</h1>
 
         <PromptInput
