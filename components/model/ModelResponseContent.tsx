@@ -1,4 +1,9 @@
 import { AlertCircle } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { CopyButton } from "./CopyButton";
 
 interface ResponseData {
   text: string;
@@ -42,9 +47,22 @@ export const ModelResponseContent = ({
 
   if (response?.text) {
     return (
-      <p className="text-base text-card-foreground whitespace-pre-wrap leading-relaxed">
-        {response.text}
-      </p>
+      <div className="space-y-2">
+        <div className="flex justify-end">
+          <CopyButton
+            text={response.text}
+            className="bg-background/80 backdrop-blur-sm"
+          />
+        </div>
+        <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h1:mt-6 prose-h1:mb-4 prose-h2:text-xl prose-h2:mt-5 prose-h2:mb-3 prose-h3:text-lg prose-h3:mt-4 prose-h3:mb-2 prose-p:mb-4 prose-p:leading-relaxed prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4 prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4 prose-li:mb-1 prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-transparent prose-pre:p-0 prose-blockquote:border-l-4 prose-blockquote:border-border prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:my-4 prose-strong:font-bold prose-em:italic">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypeSanitize]}
+          >
+            {response.text}
+          </ReactMarkdown>
+        </div>
+      </div>
     );
   }
 

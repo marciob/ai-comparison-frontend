@@ -70,7 +70,7 @@ export function MobileMenu({ className }: MobileMenuProps) {
             </div>
             <div className="h-px bg-border my-1" />
             <a
-              href="https://github.com/m/aicompare"
+              href="https://github.com/marciob/ai-comparison-frontend"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-4 py-2.5 hover:bg-accent"

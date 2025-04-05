@@ -17,10 +17,12 @@ export function ModelTrigger({
   onToggleModel,
 }: ModelTriggerProps) {
   return (
-    <div className="flex items-center gap-2">
-      <div className={`w-2 h-2 rounded-full ${model.color} flex-shrink-0`} />
-      <span className="flex-1 truncate font-medium">{model.name}</span>
-      <div className="flex items-center gap-2">
+    <div className="flex items-center w-full">
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+        <div className={`w-2 h-2 rounded-full ${model.color} flex-shrink-0`} />
+        <span className="truncate font-medium">{model.name}</span>
+      </div>
+      <div className="flex items-center gap-2 flex-shrink-0 ml-4">
         {model.id === "claude" ? (
           <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded whitespace-nowrap">
             Coming soon
