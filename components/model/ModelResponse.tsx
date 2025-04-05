@@ -2,20 +2,27 @@
 
 import { motion } from "framer-motion";
 import { AI_MODELS } from "@/config/models";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
+import { Clock } from "lucide-react";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
+
+interface ResponseData {
+  text: string;
+  responseTime: number;
+}
 
 interface ModelResponseProps {
   id: string;
   name: string;
   color: string;
-  response?: string;
+  response?: ResponseData;
   isLoading: boolean;
   modelSettings?: Record<string, string>;
 }
 
-export function ModelResponse({
+// Memoize the component to prevent unnecessary re-renders
+export const ModelResponse = memo(function ModelResponse({
   id,
   name,
   color,
@@ -65,11 +72,21 @@ export function ModelResponse({
     >
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-semibold text-foreground">{name}</h2>
-        {selectedModelName && (
-          <span className="text-sm text-muted-foreground">
-            {selectedModelName}
-          </span>
-        )}
+        <div className="flex items-center gap-4">
+          {response?.responseTime && (
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/50">
+              <Clock className="w-3 h-3 text-muted-foreground" />
+              <span className="text-xs font-medium text-muted-foreground">
+                {(response.responseTime / 1000).toFixed(1)}s
+              </span>
+            </div>
+          )}
+          {selectedModelName && (
+            <span className="text-sm text-muted-foreground">
+              {selectedModelName}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex-grow overflow-y-auto pr-4">
@@ -83,7 +100,7 @@ export function ModelResponse({
           </div>
         ) : response ? (
           <p className="text-base text-card-foreground whitespace-pre-wrap leading-relaxed">
-            {response}
+            {response.text}
           </p>
         ) : (
           <p className="text-base text-muted-foreground">
@@ -93,4 +110,4 @@ export function ModelResponse({
       </div>
     </motion.div>
   );
-}
+});

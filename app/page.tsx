@@ -12,7 +12,8 @@ export default function Home() {
     AI_MODELS.map((model) => model.id)
   );
   const { modelSettings, setModelSettings } = useModelSettings();
-  const { responses, isLoading, generateResponses } = useModelResponses();
+  const { responses, isLoading, generateResponses, getModelLoadingState } =
+    useModelResponses();
 
   // Load initial model settings
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function Home() {
                 name={model.name}
                 color={model.color}
                 response={responses[model.id]}
-                isLoading={isLoading}
+                isLoading={getModelLoadingState(model.id)}
                 modelSettings={modelSettings}
               />
             )
