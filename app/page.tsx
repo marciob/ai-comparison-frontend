@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { PromptInput } from "@/app/components/prompt/PromptInput";
-import { ModelResponse } from "@/app/components/model/ModelResponse";
-import { AI_MODELS } from "@/app/config/models";
+import { PromptInput } from "@/components/prompt/PromptInput";
+import { ModelResponse } from "@/components/model/ModelResponse";
+import { AI_MODELS } from "@/config/models";
 
 export default function Home() {
   const [responses, setResponses] = useState<Record<string, string>>({});
@@ -45,7 +45,7 @@ export default function Home() {
 
         <PromptInput
           onSubmit={handleSubmit}
-          isLoading={isLoading}
+          loading={isLoading}
           models={AI_MODELS}
           selectedModels={selectedModels}
           onToggleModel={handleToggleModel}

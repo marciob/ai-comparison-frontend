@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/app/providers/theme-provider";
-import { ThemeToggle } from "@/app/components/theme/ThemeToggle";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Model Comparison",
-  description: "Compare responses from multiple AI models side by side",
+  title: "AI Compare",
+  description: "Compare responses from different AI models",
 };
 
 export default function RootLayout({
