@@ -38,12 +38,20 @@ export default function Home() {
         setSelectedModels(parsed);
       } catch (error) {
         console.error("Failed to load selected models:", error);
-        // Fallback to all models if there's an error
-        setSelectedModels(AI_MODELS.map((model) => model.id));
+        // Fallback to all models except Anthropic if there's an error
+        setSelectedModels(
+          AI_MODELS.filter((model) => model.provider !== "anthropic").map(
+            (model) => model.id
+          )
+        );
       }
     } else {
-      // Default to all models if no saved selection
-      setSelectedModels(AI_MODELS.map((model) => model.id));
+      // Default to all models except Anthropic if no saved selection
+      setSelectedModels(
+        AI_MODELS.filter((model) => model.provider !== "anthropic").map(
+          (model) => model.id
+        )
+      );
     }
   }, []);
 

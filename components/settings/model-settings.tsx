@@ -32,7 +32,9 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
       try {
         const parsed = JSON.parse(savedSettings);
         // Ensure all providers have a selected model by applying defaults where needed
-        const withDefaults = AI_MODELS.reduce(
+        const withDefaults = AI_MODELS.filter(
+          (provider) => provider.provider !== "anthropic"
+        ).reduce(
           (acc, provider) => ({
             ...acc,
             [provider.id]: parsed[provider.id] || provider.models[0].id,
@@ -50,7 +52,9 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
       } catch (error) {
         console.error("Failed to parse saved model settings:", error);
         // On error, fall back to defaults
-        const defaults = AI_MODELS.reduce(
+        const defaults = AI_MODELS.filter(
+          (provider) => provider.provider !== "anthropic"
+        ).reduce(
           (acc, provider) => ({
             ...acc,
             [provider.id]: provider.models[0].id,
@@ -62,7 +66,9 @@ export function ModelSettings({ onModelChange }: ModelSettingsProps) {
       }
     } else {
       // Set defaults if no saved settings
-      const defaults = AI_MODELS.reduce(
+      const defaults = AI_MODELS.filter(
+        (provider) => provider.provider !== "anthropic"
+      ).reduce(
         (acc, provider) => ({
           ...acc,
           [provider.id]: provider.models[0].id,

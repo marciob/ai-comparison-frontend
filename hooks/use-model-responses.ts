@@ -59,11 +59,15 @@ export function useModelResponses() {
     prompt: string,
     selectedModels: string[]
   ) => {
-    console.log("Starting to generate responses for models:", selectedModels);
+    // Filter out Anthropic model from selected models
+    const enabledModels = selectedModels.filter(
+      (modelId) => modelId !== "claude"
+    );
+    console.log("Starting to generate responses for models:", enabledModels);
 
     // Clear previous responses and set initial loading states
     setResponses({});
-    const initialLoadingState = selectedModels.reduce((acc, modelId) => {
+    const initialLoadingState = enabledModels.reduce((acc, modelId) => {
       acc[modelId] = true;
       return acc;
     }, {} as Record<string, boolean>);
@@ -82,27 +86,22 @@ export function useModelResponses() {
         const responseTime = Date.now() - startTime;
         console.log(`${modelId}: Received response in ${responseTime}ms`);
 
-        // Update states independently for each model
-        setResponses((prev) => {
-          const newResponses = {
-            ...prev,
-            [modelId]: {
-              text: response,
-              responseTime,
-            },
-          };
-          console.log(`${modelId}: Updated responses:`, newResponses);
-          return newResponses;
-        });
+        // Update both states in a single batch
+        const responseData = {
+          text: response,
+          responseTime,
+        };
 
-        setLoadingModels((prev) => {
-          const newLoadingStates = {
-            ...prev,
-            [modelId]: false,
-          };
-          console.log(`${modelId}: Updated loading states:`, newLoadingStates);
-          return newLoadingStates;
-        });
+        setResponses((prev) => ({
+          ...prev,
+          [modelId]: responseData,
+        }));
+        console.log(`${modelId}: Updated response:`, responseData);
+
+        setLoadingModels((prev) => ({
+          ...prev,
+          [modelId]: false,
+        }));
 
         console.log(`${modelId}: State updates complete`);
       } catch (error) {
@@ -110,15 +109,18 @@ export function useModelResponses() {
         const errorMessage =
           error instanceof Error ? error.message : "An unknown error occurred";
 
-        // Update responses with error state instead of showing toast
+        // Update both states in a single batch for error case
+        const errorResponseData = {
+          text: "",
+          responseTime: Date.now() - startTime,
+          error: errorMessage,
+        };
+
         setResponses((prev) => ({
           ...prev,
-          [modelId]: {
-            text: "",
-            responseTime: Date.now() - startTime,
-            error: errorMessage,
-          },
+          [modelId]: errorResponseData,
         }));
+        console.log(`${modelId}: Updated response (error):`, errorResponseData);
 
         setLoadingModels((prev) => ({
           ...prev,
@@ -128,13 +130,11 @@ export function useModelResponses() {
     };
 
     // Create an array of promises for concurrent execution
-    const modelPromises = selectedModels.map((modelId) => {
+    const modelPromises = enabledModels.map((modelId) => {
       const getModelFunction = () => {
         switch (modelId) {
           case "gpt-4":
             return generateOpenAICompletion;
-          case "claude":
-            return generateClaudeCompletion;
           case "gemini":
             return generateGeminiCompletion;
           case "deepseek":
