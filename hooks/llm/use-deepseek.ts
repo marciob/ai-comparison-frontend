@@ -11,7 +11,16 @@ export function useDeepseek(options: UseDeepseekOptions = {}) {
   const { getApiKey } = useApiKeys();
   const { onError } = options;
 
-  const generateCompletion = async (prompt: string): Promise<string> => {
+  const generateCompletion = async (
+    prompt: string
+  ): Promise<{
+    text: string;
+    tokenUsage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  }> => {
     const apiKey = getApiKey("deepseek");
 
     if (!apiKey) {
@@ -27,8 +36,7 @@ export function useDeepseek(options: UseDeepseekOptions = {}) {
     try {
       const service = DeepseekService.getInstance();
       service.initialize(apiKey);
-      const response = await service.generateCompletion(prompt);
-      return response;
+      return await service.generateCompletion(prompt);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";

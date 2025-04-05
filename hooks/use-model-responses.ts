@@ -9,6 +9,11 @@ interface ResponseData {
   text: string;
   responseTime: number;
   error?: string;
+  tokenUsage?: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
 }
 
 export function useModelResponses() {
@@ -75,16 +80,24 @@ export function useModelResponses() {
     // Function to handle response for a specific model
     const handleModelResponse = async (
       modelId: string,
-      generateFn: (prompt: string) => Promise<string>
+      generateFn: (prompt: string) => Promise<{
+        text: string;
+        tokenUsage?: {
+          promptTokens: number;
+          completionTokens: number;
+          totalTokens: number;
+        };
+      }>
     ) => {
       const startTime = Date.now();
       try {
-        const response = await generateFn(prompt);
+        const { text, tokenUsage } = await generateFn(prompt);
         const responseTime = Date.now() - startTime;
 
         const responseData = {
-          text: response,
+          text,
           responseTime,
+          tokenUsage,
         };
 
         setResponses((prev) => ({

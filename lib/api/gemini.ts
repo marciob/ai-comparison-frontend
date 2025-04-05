@@ -40,7 +40,14 @@ export class GeminiService {
     return "gemini-2.5-pro-preview-03-25";
   }
 
-  public async generateCompletion(prompt: string): Promise<string> {
+  public async generateCompletion(prompt: string): Promise<{
+    text: string;
+    tokenUsage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  }> {
     if (!this.client) {
       throw new Error(
         "Gemini client is not initialized. Please set your API key first."
@@ -53,9 +60,25 @@ export class GeminiService {
       const cleanModelId = modelId.replace("models/", "");
       const model = this.client.getGenerativeModel({ model: cleanModelId });
 
+      // Count tokens in the prompt
+      const promptTokenCount = await model.countTokens(prompt);
+
+      // Generate the response
       const result = await model.generateContent(prompt);
       const response = result.response;
-      return response.text();
+      const text = response.text();
+
+      // Since we can't get exact completion tokens, estimate based on response length
+      const estimatedCompletionTokens = Math.ceil(text.length / 4); // rough estimate
+
+      return {
+        text,
+        tokenUsage: {
+          promptTokens: promptTokenCount.totalTokens,
+          completionTokens: estimatedCompletionTokens,
+          totalTokens: promptTokenCount.totalTokens + estimatedCompletionTokens,
+        },
+      };
     } catch (error) {
       if (error instanceof Error) {
         const message =

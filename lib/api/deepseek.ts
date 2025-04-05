@@ -44,7 +44,14 @@ export class DeepseekService {
     return "deepseek-chat";
   }
 
-  public async generateCompletion(prompt: string): Promise<string> {
+  public async generateCompletion(prompt: string): Promise<{
+    text: string;
+    tokenUsage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  }> {
     if (!this.client) {
       throw new Error(
         "Deepseek client is not initialized. Please set your API key first."
@@ -63,7 +70,17 @@ export class DeepseekService {
         max_tokens: modelConfig?.maxTokens || 4096,
       });
 
-      return completion.choices[0]?.message?.content || "No response generated";
+      return {
+        text:
+          completion.choices[0]?.message?.content || "No response generated",
+        tokenUsage: completion.usage
+          ? {
+              promptTokens: completion.usage.prompt_tokens,
+              completionTokens: completion.usage.completion_tokens,
+              totalTokens: completion.usage.total_tokens,
+            }
+          : undefined,
+      };
     } catch (error) {
       if (error instanceof OpenAI.APIError) {
         // Handle specific API errors
