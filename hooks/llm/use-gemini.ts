@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { OpenAIService } from "@/lib/api/openai";
-import { useApiKeys } from "./use-api-keys";
+import { GeminiService } from "@/lib/api/gemini";
+import { useApiKeys } from "@/hooks/use-api-keys";
 
-interface UseOpenAIOptions {
+interface UseGeminiOptions {
   onError?: (error: Error) => void;
 }
 
-export function useOpenAI(options: UseOpenAIOptions = {}) {
+export function useGemini(options: UseGeminiOptions = {}) {
   const [isLoading, setIsLoading] = useState(false);
   const { getApiKey } = useApiKeys();
   const { onError } = options;
 
   const generateCompletion = async (prompt: string): Promise<string> => {
-    const apiKey = getApiKey("openai");
+    const apiKey = getApiKey("google");
 
     if (!apiKey) {
       const error = new Error(
-        "OpenAI API key is not set. Please add your API key in the settings."
+        "Google API key is not set. Please add your API key in the settings."
       );
       if (onError) onError(error);
       throw error;
@@ -25,7 +25,7 @@ export function useOpenAI(options: UseOpenAIOptions = {}) {
     setIsLoading(true);
 
     try {
-      const service = OpenAIService.getInstance();
+      const service = GeminiService.getInstance();
       service.initialize(apiKey);
       const response = await service.generateCompletion(prompt);
       return response;

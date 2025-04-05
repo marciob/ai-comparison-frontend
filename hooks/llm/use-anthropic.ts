@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnthropicService } from "@/lib/api/anthropic";
-import { useApiKeys } from "./use-api-keys";
+import { useApiKeys } from "@/hooks/use-api-keys";
 
 interface UseAnthropicOptions {
   onError?: (error: Error) => void;

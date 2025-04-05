@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { PromptInput } from "@/components/prompt/PromptInput";
 import { ModelResponse } from "@/components/model/ModelResponse";
 import { AI_MODELS } from "@/config/models";
-import { useOpenAI } from "@/hooks/use-openai";
-import { useAnthropic } from "@/hooks/use-anthropic";
+import { useOpenAI, useAnthropic, useGemini } from "@/hooks/llm";
 import { toast } from "sonner";
 import { SettingsDialog } from "@/components/ui/settings-dialog";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -31,6 +30,15 @@ export default function Home() {
     generateCompletion: generateClaudeCompletion,
     isLoading: isClaudeLoading,
   } = useAnthropic({
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const {
+    generateCompletion: generateGeminiCompletion,
+    isLoading: isGeminiLoading,
+  } = useGemini({
     onError: (error) => {
       toast.error(error.message);
     },
@@ -90,6 +98,19 @@ export default function Home() {
         );
       }
 
+      if (selectedModels.includes("gemini")) {
+        apiCalls.push(
+          generateGeminiCompletion(prompt)
+            .then((response) => {
+              setResponses((prev) => ({
+                ...prev,
+                gemini: response,
+              }));
+            })
+            .catch((error) => console.error("Gemini API error:", error))
+        );
+      }
+
       // Wait for all API calls to complete
       await Promise.all(apiCalls);
     } catch (error) {
@@ -104,7 +125,7 @@ export default function Home() {
 
         <PromptInput
           onSubmit={handleSubmit}
-          loading={isOpenAILoading || isClaudeLoading}
+          loading={isOpenAILoading || isClaudeLoading || isGeminiLoading}
           models={AI_MODELS}
           selectedModels={selectedModels}
           onToggleModel={handleToggleModel}
@@ -124,6 +145,8 @@ export default function Home() {
                     ? isOpenAILoading
                     : model.id === "claude"
                     ? isClaudeLoading
+                    : model.id === "gemini"
+                    ? isGeminiLoading
                     : false
                 }
                 modelSettings={modelSettings}

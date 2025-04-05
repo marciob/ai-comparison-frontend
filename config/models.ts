@@ -61,14 +61,39 @@ export const AI_MODELS: AIModel[] = [
     provider: "anthropic",
     models: [
       {
-        id: "claude-3-opus",
+        id: "claude-3-7-sonnet-20250219",
+        name: "Claude 3.7 Sonnet",
+        description: "Most advanced Claude model",
+      },
+      {
+        id: "claude-3-5-haiku-20241022",
+        name: "Claude 3.5 Haiku",
+        description: "Fast and efficient model",
+      },
+      {
+        id: "claude-3-5-sonnet-20241022",
+        name: "Claude 3.5 Sonnet v2",
+        description: "Balanced performance and capabilities",
+      },
+      {
+        id: "claude-3-5-sonnet-20240620",
+        name: "Claude 3.5 Sonnet",
+        description: "Original Claude 3.5 Sonnet model",
+      },
+      {
+        id: "claude-3-opus-20240229",
         name: "Claude 3 Opus",
         description: "Most powerful Claude model",
       },
       {
-        id: "claude-3-sonnet",
+        id: "claude-3-sonnet-20240229",
         name: "Claude 3 Sonnet",
         description: "Balanced performance and speed",
+      },
+      {
+        id: "claude-3-haiku-20240307",
+        name: "Claude 3 Haiku",
+        description: "Fast and efficient model",
       },
     ],
   },
@@ -80,14 +105,43 @@ export const AI_MODELS: AIModel[] = [
     provider: "google",
     models: [
       {
-        id: "gemini-pro",
-        name: "Gemini Pro",
-        description: "Advanced reasoning and understanding",
+        id: "gemini-2.5-pro-preview-03-25",
+        name: "Gemini 2.5 Pro Preview",
+        description:
+          "Enhanced thinking and reasoning, multimodal understanding, advanced coding, and more",
+        maxTokens: 8192,
       },
       {
-        id: "gemini-pro-vision",
-        name: "Gemini Pro Vision",
-        description: "Advanced vision and language capabilities",
+        id: "gemini-2.0-flash",
+        name: "Gemini 2.0 Flash",
+        description:
+          "Next generation features, speed, thinking, realtime streaming, and multimodal generation",
+        maxTokens: 8192,
+      },
+      {
+        id: "gemini-2.0-flash-lite",
+        name: "Gemini 2.0 Flash-Lite",
+        description: "Cost efficiency and low latency",
+        maxTokens: 8192,
+      },
+      {
+        id: "gemini-1.5-flash",
+        name: "Gemini 1.5 Flash",
+        description:
+          "Fast and versatile performance across a diverse variety of tasks",
+        maxTokens: 8192,
+      },
+      {
+        id: "gemini-1.5-flash-8b",
+        name: "Gemini 1.5 Flash-8B",
+        description: "High volume and lower intelligence tasks",
+        maxTokens: 8192,
+      },
+      {
+        id: "gemini-1.5-pro",
+        name: "Gemini 1.5 Pro",
+        description: "Complex reasoning tasks requiring more intelligence",
+        maxTokens: 8192,
       },
     ],
   },
