@@ -1,17 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PromptInput } from "@/components/prompt/PromptInput";
 import { ModelResponse } from "@/components/model/ModelResponse";
 import { AI_MODELS } from "@/config/models";
 import { useOpenAI } from "@/hooks/use-openai";
+import { useAnthropic } from "@/hooks/use-anthropic";
 import { toast } from "sonner";
+import { SettingsDialog } from "@/components/ui/settings-dialog";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { useModelSettings } from "@/providers/model-settings-provider";
 
 export default function Home() {
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [selectedModels, setSelectedModels] = useState<string[]>(
     AI_MODELS.map((model) => model.id)
   );
+  const { modelSettings, setModelSettings } = useModelSettings();
 
   const {
     generateCompletion: generateOpenAICompletion,
@@ -21,6 +26,27 @@ export default function Home() {
       toast.error(error.message);
     },
   });
+
+  const {
+    generateCompletion: generateClaudeCompletion,
+    isLoading: isClaudeLoading,
+  } = useAnthropic({
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  // Load initial model settings
+  useEffect(() => {
+    const savedSettings = localStorage.getItem("ai-model-settings");
+    if (savedSettings) {
+      try {
+        setModelSettings(JSON.parse(savedSettings));
+      } catch (error) {
+        console.error("Failed to load model settings:", error);
+      }
+    }
+  }, []);
 
   const handleToggleModel = (modelId: string) => {
     setSelectedModels((prev) =>
@@ -35,18 +61,38 @@ export default function Home() {
     setResponses({});
 
     try {
-      // Only call OpenAI if it's selected
+      // Call APIs in parallel for better performance
+      const apiCalls = [];
+
       if (selectedModels.includes("gpt-4")) {
-        const openAIResponse = await generateOpenAICompletion(prompt);
-        setResponses((prev) => ({
-          ...prev,
-          "gpt-4": openAIResponse,
-        }));
+        apiCalls.push(
+          generateOpenAICompletion(prompt)
+            .then((response) => {
+              setResponses((prev) => ({
+                ...prev,
+                "gpt-4": response,
+              }));
+            })
+            .catch((error) => console.error("OpenAI API error:", error))
+        );
       }
 
-      // Other model calls will be added here later
+      if (selectedModels.includes("claude")) {
+        apiCalls.push(
+          generateClaudeCompletion(prompt)
+            .then((response) => {
+              setResponses((prev) => ({
+                ...prev,
+                claude: response,
+              }));
+            })
+            .catch((error) => console.error("Claude API error:", error))
+        );
+      }
+
+      // Wait for all API calls to complete
+      await Promise.all(apiCalls);
     } catch (error) {
-      // Errors are already handled by the hook
       console.error("Failed to generate responses:", error);
     }
   };
@@ -58,7 +104,7 @@ export default function Home() {
 
         <PromptInput
           onSubmit={handleSubmit}
-          loading={isOpenAILoading}
+          loading={isOpenAILoading || isClaudeLoading}
           models={AI_MODELS}
           selectedModels={selectedModels}
           onToggleModel={handleToggleModel}
@@ -73,7 +119,14 @@ export default function Home() {
                 name={model.name}
                 color={model.color}
                 response={responses[model.id]}
-                isLoading={model.id === "gpt-4" ? isOpenAILoading : false}
+                isLoading={
+                  model.id === "gpt-4"
+                    ? isOpenAILoading
+                    : model.id === "claude"
+                    ? isClaudeLoading
+                    : false
+                }
+                modelSettings={modelSettings}
               />
             )
           )}

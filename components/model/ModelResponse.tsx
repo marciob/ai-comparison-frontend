@@ -12,6 +12,7 @@ interface ModelResponseProps {
   color: string;
   response?: string;
   isLoading: boolean;
+  modelSettings?: Record<string, string>;
 }
 
 export function ModelResponse({
@@ -20,26 +21,36 @@ export function ModelResponse({
   color,
   response,
   isLoading,
+  modelSettings,
 }: ModelResponseProps) {
   const [selectedModelName, setSelectedModelName] = useState<string>("");
 
   useEffect(() => {
-    // Load the selected model name
-    const savedSettings = localStorage.getItem(MODEL_SETTINGS_KEY);
-    if (savedSettings) {
-      try {
-        const settings = JSON.parse(savedSettings);
-        const provider = AI_MODELS.find((p) => p.id === id);
-        const modelId = settings[id];
-        const model = provider?.models.find((m) => m.id === modelId);
-        if (model) {
-          setSelectedModelName(model.name);
+    if (modelSettings) {
+      const provider = AI_MODELS.find((p) => p.id === id);
+      const modelId = modelSettings[id];
+      const model = provider?.models.find((m) => m.id === modelId);
+      if (model) {
+        setSelectedModelName(model.name);
+      }
+    } else {
+      // Load from localStorage as fallback
+      const savedSettings = localStorage.getItem(MODEL_SETTINGS_KEY);
+      if (savedSettings) {
+        try {
+          const settings = JSON.parse(savedSettings);
+          const provider = AI_MODELS.find((p) => p.id === id);
+          const modelId = settings[id];
+          const model = provider?.models.find((m) => m.id === modelId);
+          if (model) {
+            setSelectedModelName(model.name);
+          }
+        } catch (error) {
+          console.error("Failed to load model settings:", error);
         }
-      } catch (error) {
-        console.error("Failed to load model settings:", error);
       }
     }
-  }, [id]);
+  }, [id, modelSettings]);
 
   return (
     <motion.div

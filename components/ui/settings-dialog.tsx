@@ -12,9 +12,12 @@ import { Settings } from "lucide-react";
 import { ApiKeysManager } from "./api-keys-manager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription } from "./card";
-import { ModelSettings } from "./model-settings";
+import { ModelSettings as ModelSettingsComponent } from "./model-settings";
+import { useModelSettings } from "@/providers/model-settings-provider";
 
 export function SettingsDialog() {
+  const { setModelSettings } = useModelSettings();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -60,7 +63,7 @@ export function SettingsDialog() {
               <ApiKeysManager />
             </TabsContent>
             <TabsContent value="models" className="mt-0 border-0">
-              <ModelSettings />
+              <ModelSettingsComponent onModelChange={setModelSettings} />
             </TabsContent>
             <TabsContent value="preferences" className="mt-0 border-0">
               <Card>

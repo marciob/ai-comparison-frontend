@@ -18,7 +18,11 @@ interface ModelSettings {
   [providerId: string]: string; // provider ID -> selected model ID
 }
 
-export function ModelSettings() {
+interface ModelSettingsProps {
+  onModelChange?: (settings: ModelSettings) => void;
+}
+
+export function ModelSettings({ onModelChange }: ModelSettingsProps) {
   const [selectedModels, setSelectedModels] = useState<ModelSettings>({});
 
   useEffect(() => {
@@ -26,7 +30,8 @@ export function ModelSettings() {
     const savedSettings = localStorage.getItem(MODEL_SETTINGS_KEY);
     if (savedSettings) {
       try {
-        setSelectedModels(JSON.parse(savedSettings));
+        const parsed = JSON.parse(savedSettings);
+        setSelectedModels(parsed);
       } catch (error) {
         console.error("Failed to parse saved model settings:", error);
       }
@@ -43,6 +48,11 @@ export function ModelSettings() {
       localStorage.setItem(MODEL_SETTINGS_KEY, JSON.stringify(defaults));
     }
   }, []);
+
+  // Notify parent of changes
+  useEffect(() => {
+    onModelChange?.(selectedModels);
+  }, [selectedModels, onModelChange]);
 
   const handleModelChange = (providerId: string, modelId: string) => {
     setSelectedModels((prev) => {

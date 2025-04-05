@@ -31,6 +31,13 @@ export const AI_MODELS: AIModel[] = [
         defaultTemperature: 0.7,
       },
       {
+        id: "gpt-4o-mini",
+        name: "GPT-4o Mini",
+        description: "Optimized for efficiency and performance",
+        maxTokens: 4096,
+        defaultTemperature: 0.7,
+      },
+      {
         id: "gpt-4",
         name: "GPT-4",
         description: "More reliable, slightly slower than Turbo",
