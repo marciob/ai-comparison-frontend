@@ -51,7 +51,7 @@ export default function Home() {
         )
       );
     }
-  }, []);
+  }, [setModelSettings]);
 
   const handleToggleModel = (modelId: string) => {
     setSelectedModels((prev) => {

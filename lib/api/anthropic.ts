@@ -8,6 +8,8 @@ export class AnthropicService {
   private client: Anthropic | null = null;
   private static instance: AnthropicService;
   private apiKey: string | null = null;
+  private temperature: number = 0.7;
+  private initialized: boolean = false;
 
   private constructor() {}
 
@@ -18,8 +20,10 @@ export class AnthropicService {
     return AnthropicService.instance;
   }
 
-  public initialize(apiKey: string) {
+  public initialize(apiKey: string, temperature: number = 0.7) {
     this.apiKey = apiKey;
+    this.temperature = temperature;
+    this.initialized = true;
     if (!apiKey) {
       throw new Error("Anthropic API key is required");
     }

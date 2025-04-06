@@ -8,7 +8,7 @@ import { AIModel } from "@/config/models";
 interface PromptControlsProps {
   prompt: string;
   onPromptChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (prompt: string) => void;
   models: AIModel[];
   selectedModels: string[];
   onToggleModel: (modelId: string) => void;

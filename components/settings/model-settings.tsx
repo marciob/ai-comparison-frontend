@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription } from "@/components/ui/card";
-import { AI_MODELS, type AIModel, type AIModelOption } from "@/config/models";
+import { AI_MODELS } from "@/config/models";
 import {
   Select,
   SelectContent,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
+import { AIModel, AIModelOption } from "@/config/models";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 

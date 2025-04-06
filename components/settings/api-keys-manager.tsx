@@ -92,6 +92,7 @@ export function ApiKeysManager() {
             Add your API keys for each provider to enable their models. Keys are
             stored in your browser's local storage.
           </p>
+          <p>Don't share your API keys with anyone.</p>
           <SecurityWarning />
         </CardDescription>
       </CardHeader>

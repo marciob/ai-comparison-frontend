@@ -3,6 +3,8 @@ import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 export class GoogleService {
   private static instance: GoogleService;
   private apiKey: string | null = null;
+  private temperature: number = 0.7;
+  private initialized: boolean = false;
 
   private constructor() {}
 
@@ -13,8 +15,10 @@ export class GoogleService {
     return GoogleService.instance;
   }
 
-  public initialize(apiKey: string) {
+  public initialize(apiKey: string, temperature: number = 0.7) {
     this.apiKey = apiKey;
+    this.temperature = temperature;
+    this.initialized = true;
   }
 
   public async generateResponse(

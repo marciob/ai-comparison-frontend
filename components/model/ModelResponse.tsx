@@ -7,6 +7,7 @@ import { ModelResponseContent } from "./ModelResponseContent";
 import { memo } from "react";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
+const color = "blue";
 
 interface ResponseData {
   text: string;

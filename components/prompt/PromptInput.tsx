@@ -22,8 +22,7 @@ export function PromptInput({
 }: PromptInputProps) {
   const [prompt, setPrompt] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (prompt: string) => {
     if (!prompt.trim() || loading) return;
     onSubmit(prompt);
   };
@@ -36,9 +35,14 @@ export function PromptInput({
     }
   };
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit(prompt);
+  };
+
   return (
     <div className="flex justify-center w-full">
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-2">
+      <form onSubmit={handleFormSubmit} className="w-full max-w-2xl space-y-2">
         <ExamplePrompts
           onSelectExample={setPrompt}
           showExamples={!prompt.trim()}
