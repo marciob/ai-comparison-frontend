@@ -48,6 +48,7 @@ The application requires API keys for the AI providers you want to use:
 1. OpenAI: [Get API key](https://platform.openai.com/api-keys)
 2. DeepSeek: [Get API key](https://platform.deepseek.com/)
 3. Claude: [Get API key](https://console.anthropic.com/settings/keys)
+4. Gemini: [Get API key](https://makersuite.google.com/app/apikey)
 
 API keys are:
 
