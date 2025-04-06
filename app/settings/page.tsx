@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { OpenAIService } from "@/lib/api/openai";
