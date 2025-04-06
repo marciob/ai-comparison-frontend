@@ -80,11 +80,22 @@ export function ApiKeysManager() {
           <div className="flex items-start gap-2 p-3 rounded-md bg-destructive/20 dark:bg-destructive/30 text-destructive dark:text-destructive-foreground text-sm border border-destructive/20">
             <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
             <p>
-              <span className="font-medium">Security Warning:</span> API keys
-              are stored only in your browser's local storage. Do not use this
-              application on public or shared devices. API keys provide access
-              to your accounts and will incur charges. Keep your keys secure and
-              never share them.
+              <span className="font-medium">Security Information:</span> API
+              keys are encrypted using your browser's unique characteristics and
+              stored locally. This means:
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>Keys are encrypted and cannot be read by other websites</li>
+                <li>
+                  Keys are tied to this browser/device and cannot be copied to
+                  another
+                </li>
+                <li>Keys are stored only in your browser's local storage</li>
+                <li>Do not use this application on public or shared devices</li>
+                <li>
+                  API keys provide access to your accounts and will incur
+                  charges
+                </li>
+              </ul>
             </p>
           </div>
         </CardDescription>

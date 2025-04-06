@@ -1,13 +1,11 @@
-import OpenAI from "openai";
 import { AI_MODELS } from "@/config/models";
-import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
 export class DeepseekService {
-  private client: OpenAI | null = null;
   private static instance: DeepseekService;
   private apiKey: string | null = null;
+  private temperature: number = 0.7;
 
   private constructor() {}
 
@@ -18,16 +16,12 @@ export class DeepseekService {
     return DeepseekService.instance;
   }
 
-  public initialize(apiKey: string) {
+  public initialize(apiKey: string, temperature: number = 0.7) {
     this.apiKey = apiKey;
+    this.temperature = temperature;
     if (!apiKey) {
       throw new Error("Deepseek API key is required");
     }
-    this.client = new OpenAI({
-      baseURL: "https://api.deepseek.com/v1",
-      apiKey,
-      dangerouslyAllowBrowser: true, // Required for client-side usage
-    });
   }
 
   private getSelectedModel(): string {
@@ -55,7 +49,7 @@ export class DeepseekService {
       totalTokens: number;
     };
   }> {
-    if (!this.client) {
+    if (!this.apiKey) {
       throw new Error(
         "Deepseek client is not initialized. Please set your API key first."
       );
@@ -63,38 +57,50 @@ export class DeepseekService {
 
     try {
       const modelId = this.getSelectedModel();
-      const provider = AI_MODELS.find((m) => m.provider === "deepseek");
-      const modelConfig = provider?.models.find((m) => m.id === modelId);
 
-      const { temperatures } = useModelTemperatures();
-      const temperature = temperatures.deepseek;
+      const response = await fetch(
+        "https://api.deepseek.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: modelId,
+            messages: [{ role: "user", content: prompt }],
+            temperature: this.temperature,
+            max_tokens: 4096,
+          }),
+        }
+      );
 
-      const completion = await this.client.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
-        model: modelId,
-        temperature,
-        max_tokens: modelConfig?.maxTokens || 4096,
-      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          `Deepseek API error: ${response.status} ${response.statusText} - ${
+            errorData.error?.message || "Unknown error"
+          }`
+        );
+      }
+
+      const data = await response.json();
 
       return {
-        text:
-          completion.choices[0]?.message?.content || "No response generated",
-        tokenUsage: completion.usage
+        text: data.choices[0]?.message?.content || "No response generated",
+        tokenUsage: data.usage
           ? {
-              promptTokens: completion.usage.prompt_tokens,
-              completionTokens: completion.usage.completion_tokens,
-              totalTokens: completion.usage.total_tokens,
+              promptTokens: data.usage.prompt_tokens,
+              completionTokens: data.usage.completion_tokens,
+              totalTokens: data.usage.total_tokens,
             }
           : undefined,
       };
     } catch (error) {
-      if (error instanceof OpenAI.APIError) {
-        // Handle specific API errors
-        const message =
-          error.message || "An error occurred with the Deepseek API";
-        throw new Error(`Deepseek API Error: ${message}`);
+      console.error("Deepseek API error details:", error);
+      if (error instanceof Error) {
+        throw new Error(`Deepseek API Error: ${error.message}`);
       }
-      // Handle other errors
       throw new Error("Failed to generate completion");
     }
   }
@@ -107,9 +113,6 @@ export class DeepseekService {
       throw new Error("DeepSeek API key not initialized");
     }
 
-    const { temperatures } = useModelTemperatures();
-    const temperature = temperatures.deepseek;
-
     const response = await fetch(
       "https://api.deepseek.com/v1/chat/completions",
       {
@@ -121,7 +124,7 @@ export class DeepseekService {
         body: JSON.stringify({
           model,
           messages: [{ role: "user", content: prompt }],
-          temperature,
+          temperature: this.temperature,
           max_tokens: 1000,
         }),
       }

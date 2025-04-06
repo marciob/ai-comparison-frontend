@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import { AI_MODELS } from "@/config/models";
-import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
@@ -8,6 +7,7 @@ export class OpenAIService {
   private client: OpenAI | null = null;
   private static instance: OpenAIService;
   private apiKey: string | null = null;
+  private temperature: number = 0.7;
 
   private constructor() {}
 
@@ -18,8 +18,9 @@ export class OpenAIService {
     return OpenAIService.instance;
   }
 
-  public initialize(apiKey: string) {
+  public initialize(apiKey: string, temperature: number = 0.7) {
     this.apiKey = apiKey;
+    this.temperature = temperature;
     if (!apiKey) {
       throw new Error("OpenAI API key is required");
     }
@@ -65,13 +66,10 @@ export class OpenAIService {
       const openaiProvider = AI_MODELS.find((m) => m.provider === "openai");
       const modelConfig = openaiProvider?.models.find((m) => m.id === modelId);
 
-      const { temperatures } = useModelTemperatures();
-      const temperature = temperatures.openai;
-
       const completion = await this.client.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
         model: modelId,
-        temperature,
+        temperature: this.temperature,
         max_tokens: modelConfig?.maxTokens || 1000,
       });
 
@@ -87,13 +85,17 @@ export class OpenAIService {
           : undefined,
       };
     } catch (error) {
+      console.error("OpenAI API error details:", error);
       if (error instanceof OpenAI.APIError) {
         // Handle specific API errors
         const message =
           error.message || "An error occurred with the OpenAI API";
-        throw new Error(`OpenAI API Error: ${message}`);
+        const status = error.status || "Unknown status";
+        const type = error.type || "Unknown error type";
+        throw new Error(`OpenAI API Error (${status} - ${type}): ${message}`);
+      } else if (error instanceof Error) {
+        throw new Error(`OpenAI API Error: ${error.message}`);
       }
-      // Handle other errors
       throw new Error("Failed to generate completion");
     }
   }
@@ -106,9 +108,6 @@ export class OpenAIService {
       throw new Error("OpenAI API key not initialized");
     }
 
-    const { temperatures } = useModelTemperatures();
-    const temperature = temperatures.openai;
-
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -118,7 +117,7 @@ export class OpenAIService {
       body: JSON.stringify({
         model,
         messages: [{ role: "user", content: prompt }],
-        temperature,
+        temperature: this.temperature,
       }),
     });
 

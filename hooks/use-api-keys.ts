@@ -1,4 +1,9 @@
 import { useState, useEffect } from "react";
+import {
+  storeEncryptedKey,
+  getDecryptedKey,
+  removeEncryptedKey,
+} from "@/src/utils/encryption";
 
 const API_KEYS_STORAGE_KEY = "llm-api-keys";
 
@@ -14,21 +19,37 @@ export function useApiKeys() {
 
   useEffect(() => {
     // Load API keys from localStorage on mount
-    const savedKeys = localStorage.getItem(API_KEYS_STORAGE_KEY);
-    if (savedKeys) {
-      try {
-        setApiKeys(JSON.parse(savedKeys));
-      } catch (error) {
-        console.error("Failed to parse stored API keys:", error);
+    const loadEncryptedKeys = async () => {
+      const providers: (keyof ApiKeys)[] = [
+        "openai",
+        "anthropic",
+        "google",
+        "deepseek",
+      ];
+      const loadedKeys: ApiKeys = {};
+
+      for (const provider of providers) {
+        const decryptedKey = getDecryptedKey(provider);
+        if (decryptedKey) {
+          loadedKeys[provider] = decryptedKey;
+        }
       }
-    }
+
+      setApiKeys(loadedKeys);
+    };
+
+    loadEncryptedKeys();
   }, []);
 
   const updateApiKey = (provider: keyof ApiKeys, key: string) => {
     setApiKeys((prev) => {
       const newKeys = { ...prev, [provider]: key };
-      // Save to localStorage
-      localStorage.setItem(API_KEYS_STORAGE_KEY, JSON.stringify(newKeys));
+      // Store encrypted key
+      if (key) {
+        storeEncryptedKey(provider, key);
+      } else {
+        removeEncryptedKey(provider);
+      }
       return newKeys;
     });
   };
