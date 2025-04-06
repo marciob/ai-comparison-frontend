@@ -8,7 +8,13 @@ interface UseModelNameResult {
   maxTokens: number;
 }
 
-export const useModelName = (
+export function useModelName(modelId: string) {
+  const model = AI_MODELS.find((provider) => provider.id === modelId);
+  const modelName = model?.name || modelId;
+  return { modelName };
+}
+
+export const useModelNameOriginal = (
   id: string,
   modelSettings?: Record<string, string>
 ): UseModelNameResult => {

@@ -75,6 +75,7 @@ export function PromptControls({
             disabled={
               !prompt.trim() || enabledSelectedModels.length === 0 || loading
             }
+            onClick={() => onSubmit(prompt)}
             className="h-8 w-8"
           >
             <Send className="h-4 w-4" />

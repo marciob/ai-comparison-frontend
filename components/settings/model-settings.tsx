@@ -11,8 +11,6 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
-import { AIModel, AIModelOption } from "@/config/models";
-
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
 interface ModelSettings {

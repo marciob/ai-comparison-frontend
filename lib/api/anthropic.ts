@@ -1,6 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { AI_MODELS } from "@/config/models";
-import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
@@ -55,14 +54,12 @@ export class AnthropicService {
 
   public async generateResponse(
     prompt: string,
-    model: string
+    model: string,
+    temperature: number = 0.7
   ): Promise<string> {
     if (!this.apiKey) {
       throw new Error("Anthropic API key not initialized");
     }
-
-    const { temperatures } = useModelTemperatures();
-    const temperature = temperatures.anthropic;
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -88,37 +85,29 @@ export class AnthropicService {
   }
 
   public async generateCompletion(prompt: string): Promise<string> {
-    if (!this.client) {
-      throw new Error(
-        "Anthropic client is not initialized. Please set your API key first."
-      );
+    if (!this.apiKey) {
+      throw new Error("Anthropic API key not initialized");
     }
 
-    try {
-      const modelId = this.getSelectedModel();
-      const message = await this.client.messages.create({
-        model: modelId,
-        max_tokens: 1024,
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        system: "You are a helpful AI assistant.", // Adding system message as recommended
-      });
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": this.apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-3-opus-20240229",
+        messages: [{ role: "user", content: prompt }],
+        temperature: this.temperature,
+      }),
+    });
 
-      return message.content[0].type === "text"
-        ? message.content[0].text
-        : "No response generated";
-    } catch (error) {
-      if (error instanceof Anthropic.APIError) {
-        const message =
-          error.message || "An error occurred with the Anthropic API";
-        console.error("Full error:", error); // Add more detailed error logging
-        throw new Error(`Anthropic API Error: ${message}`);
-      }
-      throw new Error("Failed to generate completion");
+    if (!response.ok) {
+      throw new Error(`Anthropic API error: ${response.statusText}`);
     }
+
+    const data = await response.json();
+    return data.content[0].text;
   }
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -46,7 +45,11 @@ const API_PROVIDERS = [
   },
 ] as const;
 
-export function ApiKeysManager() {
+interface ApiKeysManagerProps {
+  onSave?: () => Promise<void>;
+}
+
+export function ApiKeysManager({ onSave }: ApiKeysManagerProps) {
   const { apiKeys, updateApiKey } = useApiKeys();
   const { temperatures, updateTemperature } = useModelTemperatures();
 
@@ -58,6 +61,7 @@ export function ApiKeysManager() {
         service.initialize(newKey);
       }
       updateApiKey(provider as keyof typeof apiKeys, newKey);
+      await onSave?.();
     } catch (error) {
       console.error(`Failed to validate ${provider} API key:`, error);
     }
@@ -90,9 +94,9 @@ export function ApiKeysManager() {
         <CardDescription className="space-y-2">
           <p>
             Add your API keys for each provider to enable their models. Keys are
-            stored in your browser's local storage.
+            stored in your browser&apos;s local storage.
           </p>
-          <p>Don't share your API keys with anyone.</p>
+          <p>Don&apos;t share your API keys with anyone.</p>
           <SecurityWarning />
         </CardDescription>
       </CardHeader>

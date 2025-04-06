@@ -1,10 +1,7 @@
-import { useModelTemperatures } from "@/hooks/use-model-temperatures";
-
 export class GoogleService {
   private static instance: GoogleService;
   private apiKey: string | null = null;
   private temperature: number = 0.7;
-  private initialized: boolean = false;
 
   private constructor() {}
 
@@ -18,36 +15,24 @@ export class GoogleService {
   public initialize(apiKey: string, temperature: number = 0.7) {
     this.apiKey = apiKey;
     this.temperature = temperature;
-    this.initialized = true;
   }
 
-  public async generateResponse(
-    prompt: string,
-    model: string
-  ): Promise<string> {
+  public async generateCompletion(prompt: string): Promise<string> {
     if (!this.apiKey) {
       throw new Error("Google API key not initialized");
     }
 
-    const { temperatures } = useModelTemperatures();
-    const temperature = temperatures.google;
-
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${this.apiKey}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: prompt }],
-            },
-          ],
+          contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature,
-            maxOutputTokens: 1000,
+            temperature: this.temperature,
           },
         }),
       }

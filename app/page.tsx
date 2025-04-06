@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { PromptInput } from "@/components/prompt/PromptInput";
 import { ModelResponse } from "@/components/model/ModelResponse";
 import { AI_MODELS } from "@/config/models";
-import { useModelSettings } from "@/providers/model-settings-provider";
 import { useModelResponses } from "@/hooks/use-model-responses";
 import { Header } from "@/components/header/Header";
 
@@ -12,23 +11,11 @@ const SELECTED_MODELS_KEY = "ai-selected-models";
 
 export default function Home() {
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
-  const { modelSettings, setModelSettings } = useModelSettings();
   const { responses, isLoading, generateResponses, getModelLoadingState } =
     useModelResponses();
 
-  // Load initial model settings and selected models
+  // Load initial selected models
   useEffect(() => {
-    // Load model settings
-    const savedSettings = localStorage.getItem("ai-model-settings");
-    if (savedSettings) {
-      try {
-        setModelSettings(JSON.parse(savedSettings));
-      } catch (error) {
-        console.error("Failed to load model settings:", error);
-      }
-    }
-
-    // Load selected models
     const savedSelectedModels = localStorage.getItem(SELECTED_MODELS_KEY);
     if (savedSelectedModels) {
       try {
@@ -51,7 +38,7 @@ export default function Home() {
         )
       );
     }
-  }, [setModelSettings]);
+  }, []);
 
   const handleToggleModel = (modelId: string) => {
     setSelectedModels((prev) => {
@@ -85,12 +72,9 @@ export default function Home() {
           ).map((model) => (
             <ModelResponse
               key={model.id}
-              id={model.id}
               name={model.name}
-              color={model.color}
               response={responses[model.id]}
               isLoading={getModelLoadingState(model.id)}
-              modelSettings={modelSettings}
             />
           ))}
         </div>

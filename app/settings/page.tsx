@@ -6,6 +6,7 @@ import { OpenAIService } from "@/lib/api/openai";
 import { DeepseekService } from "@/lib/api/deepseek";
 import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 import { saveApiKey, getApiKey } from "@/lib/utils/api-key-storage";
+import { ApiKeysManager } from "@/components/settings/api-keys-manager";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
@@ -64,5 +65,9 @@ export default function SettingsPage() {
     }
   };
 
-  return <div className="space-y-6" />;
+  return (
+    <div className="space-y-6">
+      <ApiKeysManager onSave={handleSaveSettings} />
+    </div>
+  );
 }

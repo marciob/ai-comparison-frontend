@@ -2,13 +2,13 @@ import { Hash } from "lucide-react";
 
 interface TokenUsageBarProps {
   tokenUsage?: { totalTokens: number };
-  maxTokens: number;
+  maxTokens?: number;
 }
 
-export const TokenUsageBar = ({
+export function TokenUsageBar({
   tokenUsage,
-  maxTokens,
-}: TokenUsageBarProps) => {
+  maxTokens = 4000,
+}: TokenUsageBarProps) {
   if (!tokenUsage) return null;
 
   // Use a more reasonable scale for small token counts
@@ -43,4 +43,4 @@ export const TokenUsageBar = ({
       </div>
     </div>
   );
-};
+}
