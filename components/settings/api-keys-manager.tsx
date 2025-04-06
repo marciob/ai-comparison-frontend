@@ -9,11 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon, ExternalLink, AlertTriangle } from "lucide-react";
+import { ExternalLink, Trash2 } from "lucide-react";
 import { useApiKeys } from "@/hooks/use-api-keys";
 import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 import { OpenAIService } from "@/lib/api/openai";
-import { Slider } from "@/components/ui/slider";
+import { clearApiKeys } from "@/lib/utils/api-key-storage";
+import { toast } from "sonner";
+import { ApiKeyInput } from "./api-key-input";
+import { TemperatureSlider } from "./temperature-slider";
+import { SecurityWarning } from "./security-warning";
 
 const API_PROVIDERS = [
   {
@@ -45,7 +49,6 @@ const API_PROVIDERS = [
 export function ApiKeysManager() {
   const { apiKeys, updateApiKey } = useApiKeys();
   const { temperatures, updateTemperature } = useModelTemperatures();
-  const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
 
   const handleKeyChange = async (provider: string, newKey: string) => {
     try {
@@ -57,47 +60,39 @@ export function ApiKeysManager() {
       updateApiKey(provider as keyof typeof apiKeys, newKey);
     } catch (error) {
       console.error(`Failed to validate ${provider} API key:`, error);
-      // You might want to show an error message to the user here
     }
   };
 
-  const toggleKeyVisibility = (provider: string) => {
-    setShowKeys((prev) => ({
-      ...prev,
-      [provider]: !prev[provider],
-    }));
+  const handleClearKeys = () => {
+    clearApiKeys();
+    // Reset all API keys in the state
+    Object.keys(apiKeys).forEach((provider) => {
+      updateApiKey(provider as keyof typeof apiKeys, "");
+    });
+    toast.success("API keys cleared successfully");
   };
 
   return (
     <Card className="border-none shadow-none">
       <CardHeader className="px-6 pt-6">
-        <CardTitle className="text-xl">API Keys</CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-xl">API Keys</CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClearKeys}
+            className="text-muted-foreground hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Clear All Keys
+          </Button>
+        </div>
         <CardDescription className="space-y-2">
           <p>
             Add your API keys for each provider to enable their models. Keys are
             stored in your browser's local storage.
           </p>
-          <div className="flex items-start gap-2 p-3 rounded-md bg-destructive/20 dark:bg-destructive/30 text-destructive dark:text-destructive-foreground text-sm border border-destructive/20">
-            <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-            <p>
-              <span className="font-medium">Security Information:</span> API
-              keys are encrypted using your browser's unique characteristics and
-              stored locally. This means:
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Keys are encrypted and cannot be read by other websites</li>
-                <li>
-                  Keys are tied to this browser/device and cannot be copied to
-                  another
-                </li>
-                <li>Keys are stored only in your browser's local storage</li>
-                <li>Do not use this application on public or shared devices</li>
-                <li>
-                  API keys provide access to your accounts and will incur
-                  charges
-                </li>
-              </ul>
-            </p>
-          </div>
+          <SecurityWarning />
         </CardDescription>
       </CardHeader>
       <CardContent className="px-6">
@@ -126,56 +121,15 @@ export function ApiKeysManager() {
                   {provider.description}
                 </span>
               </div>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type={showKeys[provider.id] ? "text" : "password"}
-                    id={`${provider.id}-key`}
-                    value={apiKeys[provider.id as keyof typeof apiKeys] || ""}
-                    onChange={(e) =>
-                      handleKeyChange(provider.id, e.target.value)
-                    }
-                    placeholder={`Enter your ${provider.name} API key`}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 bg-background"
-                  />
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => toggleKeyVisibility(provider.id)}
-                  className="flex-shrink-0"
-                >
-                  {showKeys[provider.id] ? (
-                    <EyeOffIcon className="h-4 w-4" />
-                  ) : (
-                    <EyeIcon className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm text-muted-foreground">
-                    Temperature
-                  </label>
-                  <span className="text-sm text-muted-foreground">
-                    {temperatures[provider.id]}
-                  </span>
-                </div>
-                <Slider
-                  value={[temperatures[provider.id]]}
-                  onValueChange={([value]) =>
-                    updateTemperature(provider.id, value)
-                  }
-                  min={0}
-                  max={2}
-                  step={0.1}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>More deterministic</span>
-                  <span>More creative</span>
-                </div>
-              </div>
+              <ApiKeyInput
+                provider={provider}
+                value={apiKeys[provider.id as keyof typeof apiKeys] || ""}
+                onChange={(value) => handleKeyChange(provider.id, value)}
+              />
+              <TemperatureSlider
+                value={temperatures[provider.id]}
+                onChange={(value) => updateTemperature(provider.id, value)}
+              />
             </div>
           ))}
         </div>

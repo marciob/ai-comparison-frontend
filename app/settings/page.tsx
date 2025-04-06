@@ -62,5 +62,5 @@ export default function SettingsPage() {
     }
   };
 
-  // ... rest of the component code ...
+  return <div className="space-y-6" />;
 }
