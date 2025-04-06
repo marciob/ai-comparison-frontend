@@ -72,6 +72,7 @@ export default function Home() {
           ).map((model) => (
             <ModelResponse
               key={model.id}
+              id={model.id}
               name={model.name}
               response={responses[model.id]}
               isLoading={getModelLoadingState(model.id)}

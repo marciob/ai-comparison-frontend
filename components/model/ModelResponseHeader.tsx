@@ -3,47 +3,61 @@
 import { Clock } from "lucide-react";
 import { TokenUsageBar } from "./TokenUsageBar";
 
-interface ModelResponseHeaderProps {
-  modelName: string;
-  responseTime?: number;
-  tokenUsage?: { totalTokens: number };
+interface ResponseData {
+  text: string;
+  responseTime: number;
   error?: string;
+  tokenUsage?: { totalTokens: number };
+}
+
+interface ModelResponseHeaderProps {
+  name: string;
+  response?: ResponseData;
+  selectedModelName: string;
+  maxTokens: number;
   isLoading?: boolean;
 }
 
-export function ModelResponseHeader({
-  modelName,
-  responseTime,
-  tokenUsage,
-  error,
+export const ModelResponseHeader = ({
+  name,
+  response,
+  selectedModelName,
+  maxTokens,
   isLoading,
-}: ModelResponseHeaderProps) {
+}: ModelResponseHeaderProps) => {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-8">
       <div className="flex items-center gap-2">
         <h2
           className={`text-2xl sm:text-xl font-semibold ${
-            error
-              ? "text-destructive"
-              : isLoading
-              ? "text-muted-foreground"
-              : "text-foreground"
+            isLoading ? "text-muted-foreground" : "text-foreground"
           }`}
         >
-          {modelName}
+          {name}
         </h2>
+        <span className="text-sm text-muted-foreground hidden sm:inline">
+          {selectedModelName}
+        </span>
       </div>
       <div className="flex items-center gap-2 sm:gap-4 justify-between sm:justify-start">
-        {responseTime && !isLoading && (
+        {response?.responseTime && !isLoading && (
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/50">
             <Clock className="w-3 h-3 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">
-              {(responseTime / 1000).toFixed(1)}s
+              {(response.responseTime / 1000).toFixed(1)}s
             </span>
           </div>
         )}
-        {!isLoading && <TokenUsageBar tokenUsage={tokenUsage} />}
+        {!isLoading && (
+          <TokenUsageBar
+            tokenUsage={response?.tokenUsage}
+            maxTokens={maxTokens}
+          />
+        )}
+        <span className="text-sm text-muted-foreground sm:hidden">
+          {selectedModelName}
+        </span>
       </div>
     </div>
   );
-}
+};
