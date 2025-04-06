@@ -15,8 +15,8 @@ export function ApiKeyWarning() {
       <div className="space-y-1">
         <p className="text-sm font-medium">Welcome to AI Compare!</p>
         <p className="text-sm text-muted-foreground">
-          To get started, you'll need to add your API keys in the settings. This
-          will allow you to compare responses from different AI models.
+          To get started, you&apos;ll need to add your API keys in the settings.
+          This will allow you to compare responses from different AI models.
         </p>
         <p className="text-sm text-muted-foreground">
           Please{" "}
