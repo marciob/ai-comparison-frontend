@@ -1,11 +1,13 @@
 import OpenAI from "openai";
 import { AI_MODELS } from "@/config/models";
+import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 
 const MODEL_SETTINGS_KEY = "ai-model-settings";
 
 export class OpenAIService {
   private client: OpenAI | null = null;
   private static instance: OpenAIService;
+  private apiKey: string | null = null;
 
   private constructor() {}
 
@@ -17,6 +19,7 @@ export class OpenAIService {
   }
 
   public initialize(apiKey: string) {
+    this.apiKey = apiKey;
     if (!apiKey) {
       throw new Error("OpenAI API key is required");
     }
@@ -62,10 +65,13 @@ export class OpenAIService {
       const openaiProvider = AI_MODELS.find((m) => m.provider === "openai");
       const modelConfig = openaiProvider?.models.find((m) => m.id === modelId);
 
+      const { temperatures } = useModelTemperatures();
+      const temperature = temperatures.openai;
+
       const completion = await this.client.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
         model: modelId,
-        temperature: modelConfig?.defaultTemperature || 0.7,
+        temperature,
         max_tokens: modelConfig?.maxTokens || 1000,
       });
 
@@ -90,5 +96,37 @@ export class OpenAIService {
       // Handle other errors
       throw new Error("Failed to generate completion");
     }
+  }
+
+  public async generateResponse(
+    prompt: string,
+    model: string
+  ): Promise<string> {
+    if (!this.apiKey) {
+      throw new Error("OpenAI API key not initialized");
+    }
+
+    const { temperatures } = useModelTemperatures();
+    const temperature = temperatures.openai;
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
   }
 }

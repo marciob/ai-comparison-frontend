@@ -11,7 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon, ExternalLink, AlertTriangle } from "lucide-react";
 import { useApiKeys } from "@/hooks/use-api-keys";
+import { useModelTemperatures } from "@/hooks/use-model-temperatures";
 import { OpenAIService } from "@/lib/api/openai";
+import { Slider } from "@/components/ui/slider";
 
 const API_PROVIDERS = [
   {
@@ -42,6 +44,7 @@ const API_PROVIDERS = [
 
 export function ApiKeysManager() {
   const { apiKeys, updateApiKey } = useApiKeys();
+  const { temperatures, updateTemperature } = useModelTemperatures();
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
 
   const handleKeyChange = async (provider: string, newKey: string) => {
@@ -89,7 +92,7 @@ export function ApiKeysManager() {
       <CardContent className="px-6">
         <div className="space-y-6">
           {API_PROVIDERS.map((provider) => (
-            <div key={provider.id} className="space-y-2">
+            <div key={provider.id} className="space-y-4">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <label
@@ -137,6 +140,30 @@ export function ApiKeysManager() {
                     <EyeIcon className="h-4 w-4" />
                   )}
                 </Button>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-sm text-muted-foreground">
+                    Temperature
+                  </label>
+                  <span className="text-sm text-muted-foreground">
+                    {temperatures[provider.id]}
+                  </span>
+                </div>
+                <Slider
+                  value={[temperatures[provider.id]]}
+                  onValueChange={([value]) =>
+                    updateTemperature(provider.id, value)
+                  }
+                  min={0}
+                  max={2}
+                  step={0.1}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>More deterministic</span>
+                  <span>More creative</span>
+                </div>
               </div>
             </div>
           ))}
