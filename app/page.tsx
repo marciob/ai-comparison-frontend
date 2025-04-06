@@ -5,7 +5,9 @@ import { PromptInput } from "@/components/prompt/PromptInput";
 import { ModelResponse } from "@/components/model/ModelResponse";
 import { AI_MODELS } from "@/config/models";
 import { useModelResponses } from "@/hooks/use-model-responses";
+import { useApiKeys } from "@/hooks/use-api-keys";
 import { Header } from "@/components/header/Header";
+import { ApiKeyWarning } from "@/components/settings/api-key-warning";
 
 const SELECTED_MODELS_KEY = "ai-selected-models";
 
@@ -13,6 +15,25 @@ export default function Home() {
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const { responses, isLoading, generateResponses, getModelLoadingState } =
     useModelResponses();
+  const { getApiKey } = useApiKeys();
+  const [showApiKeyWarning, setShowApiKeyWarning] = useState(false);
+
+  // Check for API keys on mount
+  useEffect(() => {
+    const hasApiKeys = AI_MODELS.some((model) => {
+      switch (model.provider) {
+        case "openai":
+          return !!getApiKey("openai");
+        case "google":
+          return !!getApiKey("google");
+        case "deepseek":
+          return !!getApiKey("deepseek");
+        default:
+          return false;
+      }
+    });
+    setShowApiKeyWarning(!hasApiKeys);
+  }, [getApiKey]);
 
   // Load initial selected models
   useEffect(() => {
@@ -56,6 +77,7 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <Header />
       <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
+        {showApiKeyWarning && <ApiKeyWarning />}
         <PromptInput
           onSubmit={(prompt) => generateResponses(prompt, selectedModels)}
           loading={isLoading}

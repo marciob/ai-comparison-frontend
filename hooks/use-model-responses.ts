@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useOpenAI, useAnthropic, useGemini } from "@/hooks/llm";
 import { useDeepseek } from "@/hooks/llm/use-deepseek";
+import { useApiKeys } from "@/hooks/use-api-keys";
 import { toast } from "sonner";
 
 interface ResponseData {
@@ -21,6 +22,7 @@ export function useModelResponses() {
   const [loadingModels, setLoadingModels] = useState<Record<string, boolean>>(
     {}
   );
+  const { getApiKey } = useApiKeys();
 
   const {
     generateCompletion: generateOpenAICompletion,
@@ -68,6 +70,27 @@ export function useModelResponses() {
     const enabledModels = selectedModels.filter(
       (modelId) => modelId !== "claude"
     );
+
+    // Check if any of the selected models have API keys
+    const hasApiKeys = enabledModels.some((modelId) => {
+      switch (modelId) {
+        case "gpt-4":
+          return !!getApiKey("openai");
+        case "gemini":
+          return !!getApiKey("google");
+        case "deepseek":
+          return !!getApiKey("deepseek");
+        default:
+          return false;
+      }
+    });
+
+    if (!hasApiKeys) {
+      toast.error(
+        "Please add your API keys in the settings before submitting a message."
+      );
+      return;
+    }
 
     // Clear previous responses and set initial loading states
     setResponses({});
